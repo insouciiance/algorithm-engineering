@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EightQueens.Models.Pieces;
+using EightQueens.Pieces;
 
-namespace EightQueens.Models
+namespace EightQueens.ChessBoards
 {
     public static class ChessBoardGenerator
     {

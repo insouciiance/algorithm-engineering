@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using EightQueens.Benchmarks;
-using EightQueens.Models;
-using EightQueens.Models.Pieces;
+using EightQueens.ChessBoards;
+using EightQueens.Heuristics;
 using EightQueens.Tree;
 
 namespace EightQueens

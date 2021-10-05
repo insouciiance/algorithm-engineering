@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EightQueens.Models;
-using EightQueens.Models.Pieces;
+using EightQueens.ChessBoards;
+using EightQueens.Pieces;
 
 namespace EightQueens.Tree
 {
