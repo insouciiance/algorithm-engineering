@@ -113,7 +113,34 @@ namespace IndexedFile
 
         public void Remove(int id)
         {
+            string[] allLines = File.ReadAllLines(_indexedFileName);
 
+            StreamWriter indexWriter = new (_indexedFileName);
+
+            foreach(string line in allLines) 
+            {
+                if (!int.TryParse(line.Split(',')[0], out int currentId)) 
+                {
+                    indexWriter.WriteLine(line);
+                    continue;
+                }
+
+                if (currentId == id) 
+                {
+                    int dataLineIndex = int.Parse(line.Split(',')[1]);
+                    string[] dataLines = File.ReadAllLines(_fileName);
+                    
+                    dataLines[dataLineIndex] = dataLines[dataLineIndex].Replace("true", "false");
+
+                    StreamWriter dataWriter = new(_fileName);
+
+                    File.WriteAllLines(_fileName, dataLines);
+
+                    continue;
+                }
+
+                indexWriter.WriteLine(line);
+            }
         }
     }
 }
