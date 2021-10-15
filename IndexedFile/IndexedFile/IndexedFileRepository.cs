@@ -14,7 +14,7 @@ namespace IndexedFile
         private const int BlockSize = 10;
         private readonly string _fileName;
         private readonly string _indexedFileName;
-        private int _currentIdentityIndex;
+        private List<int> _existingIndexes = new();
 
         public IndexedFileRepository(string fileName)
         {
@@ -23,20 +23,38 @@ namespace IndexedFile
             _fileName = fileName;
             _indexedFileName = $"{fileName}.index";
 
-            File.Create(_fileName).Dispose();
-            File.Create(_indexedFileName).Dispose();
-
-            using StreamWriter indexWriter = new(_indexedFileName);
-            for (int i = 0; i < BlockSize * BlocksCount; i++)
+            if (!File.Exists(_fileName))
             {
-                indexWriter.WriteLine();
+                File.Create(_fileName).Dispose();
+                File.Create(_indexedFileName).Dispose();
+
+                using StreamWriter indexWriter = new(_indexedFileName);
+                for (int i = 0; i < BlockSize * BlocksCount; i++)
+                {
+                    indexWriter.WriteLine();
+                }
+            }
+
+            using StreamReader indexReader = new(_indexedFileName);
+
+            string currentLine;
+            while ((currentLine = indexReader.ReadLine()) is not null)
+            {
+                if (currentLine is "") continue;
+
+                int currentIndex = int.Parse(currentLine.Split(',')[0]);
+                _existingIndexes.Add(currentIndex);
             }
         }
 
         public void Add(string item)
         {
             item = item ?? throw new ArgumentNullException(nameof(item));
-            int id = _currentIdentityIndex++;
+            int id = 0;
+            while (_existingIndexes.Contains(id))
+            {
+                id++;
+            }
 
             int blockId = id / BlockValuesGap;
             bool isIndexAdded = false;
@@ -49,11 +67,13 @@ namespace IndexedFile
                     FileAccess.Write,                    
                     FileShare.ReadWrite));
 
+            // skip before needed block
             for (int i = 0; i < BlockSize * blockId; i++)
             {
                 indexWriter.WriteLine(allLines[i]);
             }
 
+            // process needed block
             for (int i = BlockSize * blockId; i < BlockSize * (blockId + 1); i++)
             {
                 if (!int.TryParse(allLines[i].Split(',')[0], out int currentId))
@@ -61,9 +81,9 @@ namespace IndexedFile
                     indexWriter.WriteLine($"{id},{dataLineIndex}");
                     isIndexAdded = true;
 
-                    for (int j = i; j < BlockSize * (blockId + 1); j++)
+                    for (int j = i + 1; j < BlockSize * (blockId + 1); j++)
                     {
-                        indexWriter.WriteLine();
+                        indexWriter.WriteLine(allLines[j]);
                     }
 
                     break;
@@ -73,11 +93,19 @@ namespace IndexedFile
                 {
                     indexWriter.WriteLine($"{id},{dataLineIndex}");
                     isIndexAdded = true;
+
+                    for (int j = i + 1; j < BlockSize * (blockId + 1); j++)
+                    {
+                        indexWriter.WriteLine(allLines[j]);
+                    }
+
+                    break;
                 }
 
                 indexWriter.WriteLine(allLines[i]);
             }
 
+            //skip after needed block
             for (int i = BlockSize * (blockId + 1); i < allLines.Length; i++)
             {
                 indexWriter.WriteLine(allLines[i]);

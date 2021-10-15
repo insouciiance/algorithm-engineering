@@ -8,7 +8,7 @@ namespace IndexedFileTest
         static void Main(string[] args)
         {
             IndexedFileRepository repo = new ("students");
-            for (int i = 0; i < 30; i++)
+            for (int i = 100; i < 101; i++)
             {
                 repo.Add("student" + i);
             }
