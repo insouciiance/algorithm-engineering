@@ -7,18 +7,20 @@ using System.Threading.Tasks;
 
 namespace IndexedFile
 {
-    public class IndexedFileRepository : IRepository<string>
+    public class IndexedFileRepository : IIndexedRepository
     {
         private const int BlocksCount = 10;
         private const int BlockValuesGap = 20;
         private const int BlockSize = 10;
         private readonly string _fileName;
         private readonly string _indexedFileName;
-        private List<int> _existingIndexes = new();
+        private readonly List<int> _existingIndexes = new();
+
+        public IndexedFileRepository() : this(null) {}
 
         public IndexedFileRepository(string fileName)
         {
-            fileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+            fileName ??= "repository";
 
             _fileName = fileName;
             _indexedFileName = $"{fileName}.index";
@@ -152,9 +154,10 @@ namespace IndexedFile
             }
         }
 
-        public void Remove(int id)
+        public bool Remove(int id)
         {
             string[] allLines = File.ReadAllLines(_indexedFileName);
+            bool removed = false;
 
             using StreamWriter indexWriter = new (_indexedFileName);
 
@@ -163,7 +166,6 @@ namespace IndexedFile
                 if (!int.TryParse(line.Split(',')[0], out int currentId)) 
                 {
                     indexWriter.WriteLine(line);
-                    _existingIndexes.Remove(id);
                     continue;
                 }
 
@@ -182,6 +184,23 @@ namespace IndexedFile
 
                 indexWriter.WriteLine(line);
             }
+
+            if (removed)
+            {
+                indexWriter.WriteLine();
+            }
+
+            return removed;
+        }
+
+        public string[] GetAllData()
+        {
+            return File.ReadAllLines(_fileName);
+        }
+
+        public string[] GetAllIndexes()
+        {
+            return File.ReadAllLines(_indexedFileName);
         }
     }
 }

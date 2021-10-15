@@ -1,0 +1,17 @@
+@use '/src/shared/scss/shared.scss' as *;
+
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+
+    &:focus {
+        outline: 2px solid $main-accent-color;
+    }
+}
+
+body {
+    background-color: $main-dark-color;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+}

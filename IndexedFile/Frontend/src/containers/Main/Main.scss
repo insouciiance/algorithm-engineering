@@ -1,0 +1,24 @@
+@use '/src/shared/scss/shared.scss' as *;
+
+.MainWrapper {
+    width: 100%;
+}
+
+.MainGreeting {
+    color: $main-bright-color;
+    margin: 0;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.IndexedFileContainer {
+    display: flex;
+
+    .IndexedSection {
+        flex: 1 1;
+    }
+
+    .DataSection {
+        flex: 1 1;
+    }
+}
