@@ -35,14 +35,13 @@ namespace IndexedFile
                 }
             }
 
-            using StreamReader indexReader = new(_indexedFileName);
+            string[] allLines = File.ReadAllLines(_indexedFileName);
 
-            string currentLine;
-            while ((currentLine = indexReader.ReadLine()) is not null)
+            foreach(string line in allLines)
             {
-                if (currentLine is "") continue;
+                if (line is "") continue;
 
-                int currentIndex = int.Parse(currentLine.Split(',')[0]);
+                int currentIndex = int.Parse(line.Split(',')[0]);
                 _existingIndexes.Add(currentIndex);
             }
         }
@@ -58,7 +57,19 @@ namespace IndexedFile
 
             int blockId = id / BlockValuesGap;
             bool isIndexAdded = false;
+
+            string[] dataLines = File.ReadAllLines(_fileName);
+
             int dataLineIndex = File.ReadLines(_fileName).Count();
+
+            for (int i = 0; i < dataLines.Length; i++)
+            {
+                if (!bool.Parse(dataLines[i].Split(',')[2])) 
+                {
+                    dataLineIndex = i;
+                    break;
+                }
+            }
 
             string[] allLines = File.ReadAllLines(_indexedFileName);
             using StreamWriter indexWriter = new(            
@@ -116,13 +127,15 @@ namespace IndexedFile
                 indexWriter.WriteLine($"{id},{dataLineIndex}");    
             }
 
+            _existingIndexes.Add(id);
+
             string[] allData = File.ReadAllLines(_fileName);
             using StreamWriter dataWriter = new(_fileName);
             bool isDataAdded = false;
 
             foreach(string line in allData)
             {
-                if (!bool.Parse(line.Split(',')[2]))
+                if (!bool.Parse(line.Split(',')[2]) && !isDataAdded)
                 {
                     dataWriter.WriteLine($"{id},{item},true");
                     isDataAdded = true;
@@ -143,13 +156,14 @@ namespace IndexedFile
         {
             string[] allLines = File.ReadAllLines(_indexedFileName);
 
-            StreamWriter indexWriter = new (_indexedFileName);
+            using StreamWriter indexWriter = new (_indexedFileName);
 
             foreach(string line in allLines) 
             {
                 if (!int.TryParse(line.Split(',')[0], out int currentId)) 
                 {
                     indexWriter.WriteLine(line);
+                    _existingIndexes.Remove(id);
                     continue;
                 }
 
@@ -160,9 +174,8 @@ namespace IndexedFile
                     
                     dataLines[dataLineIndex] = dataLines[dataLineIndex].Replace("true", "false");
 
-                    StreamWriter dataWriter = new(_fileName);
-
                     File.WriteAllLines(_fileName, dataLines);
+                    _existingIndexes.Remove(id);
 
                     continue;
                 }

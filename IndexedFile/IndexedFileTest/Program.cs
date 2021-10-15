@@ -11,7 +11,17 @@ namespace IndexedFileTest
             
             while(true) 
             {
-                repo.Add(Console.ReadLine());    
+                string line = Console.ReadLine();
+                string option = line.Split(' ')[0];
+                if (option == "a") 
+                {
+                    repo.Add(line.Replace("a ", ""));
+                }
+                else 
+                {
+                    int removeId = int.Parse(line.Split(' ')[1]);
+                    repo.Remove(removeId);
+                }
             }
         }
     }
