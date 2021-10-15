@@ -41,11 +41,13 @@ export default class Main extends Component {
                     <div className={classes.IndexedSection}>
                         <LinesSection
                             data={this.state.indexes}
-                            name="Indexes"
-                        />
+                            name="Indexes" />
                     </div>
                     <div className={classes.DataSection}>
-                        <LinesSection data={this.state.data} name="Data" />
+                        <LinesSection
+                            data={this.state.data}
+                            name="Data"
+                            shouldColorize={line => line.split(',')[2] === 'true'} />
                     </div>
                 </div>
             </div>

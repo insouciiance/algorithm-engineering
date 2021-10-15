@@ -3,18 +3,35 @@ import Line from '../../components/Line/Line';
 
 import classes from './LinesSection.scss';
 
-export default function DataSection(props) {
-    const { data, name } = props;
+export default function LineSection(props) {
+    const { data, name, shouldColorize } = props;
 
+    let lines = [];
+
+    if (shouldColorize) {
+        for(let i = 0; i < data.length; i++)
+        {
+            lines.push(
+                <Line
+                    id={i}
+                    key={i}
+                    disabled={!shouldColorize(data[i])}>
+                    {data[i]}
+                </Line>
+            );
+        }
+    } else {
+        lines = data.map((line, id) =>
+        <Line id={id} key={id}>
+            {line}
+        </Line>)
+    }
+console.log(lines);
     return (
         <div className={classes.LinesSectionWrapper}>
             <p>{name}</p>
             <div className={classes.IndexesList}>
-                {data.map((line, id) => (
-                    <Line id={id} key={id}>
-                        {line}
-                    </Line>
-                ))}
+                {lines}
             </div>
         </div>
     );
