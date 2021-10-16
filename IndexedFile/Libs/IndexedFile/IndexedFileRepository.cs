@@ -158,11 +158,14 @@ namespace IndexedFile
         {
             string[] allLines = File.ReadAllLines(_indexedFileName);
             bool removed = false;
+            int removedLineIndex = 0;
 
             using StreamWriter indexWriter = new (_indexedFileName);
 
-            foreach(string line in allLines) 
+            for(int i = 0; i < allLines.Length; i++) 
             {
+                string line = allLines[i];
+
                 if (!int.TryParse(line.Split(',')[0], out int currentId)) 
                 {
                     indexWriter.WriteLine(line);
@@ -178,6 +181,8 @@ namespace IndexedFile
 
                     File.WriteAllLines(_fileName, dataLines);
                     _existingIndexes.Remove(id);
+                    removed = true;
+                    removedLineIndex = i;
 
                     continue;
                 }
@@ -185,7 +190,7 @@ namespace IndexedFile
                 indexWriter.WriteLine(line);
             }
 
-            if (removed)
+            if (removed && removedLineIndex < BlocksCount * BlockSize)
             {
                 indexWriter.WriteLine();
             }
