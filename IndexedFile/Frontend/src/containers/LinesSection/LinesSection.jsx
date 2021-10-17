@@ -4,7 +4,7 @@ import Line from '../../components/Line/Line';
 import classes from './LinesSection.scss';
 
 export default function LineSection(props) {
-    const { data, name, shouldColorize } = props;
+    const { data, name, shouldColorize, accentId } = props;
 
     let lines = [];
 
@@ -15,14 +15,18 @@ export default function LineSection(props) {
                 <Line
                     id={i}
                     key={i}
-                    disabled={!shouldColorize(data[i])}>
+                    disabled={!shouldColorize(data[i])}
+                    isHighlighted={accentId === i}>
                     {data[i]}
                 </Line>
             );
         }
     } else {
         lines = data.map((line, id) =>
-        <Line id={id} key={id}>
+        <Line
+            id={id}
+            key={id}
+            isHighlighted={accentId === id}>
             {line}
         </Line>)
     }

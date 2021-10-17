@@ -34,6 +34,12 @@ export default class Command extends Component {
                 onUpdate(res.data.data, res.data.indexes);
             });
         }
+
+        if (method === 'get') {
+            axios.get(`indexedfile/${value}`).then(res => {
+                onUpdate(res.data.lineId);
+            });
+        }
     };
 
     render() {

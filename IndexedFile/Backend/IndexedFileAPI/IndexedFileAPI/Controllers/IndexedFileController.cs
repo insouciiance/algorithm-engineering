@@ -60,5 +60,16 @@ namespace IndexedFileAPI.Controllers
                 indexes = allIndexes
             });
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Find(int id)
+        {
+            int index = _repo.Find(id);
+
+            return new JsonResult(new
+            {
+                lineId = index
+            });
+        } 
     }
 }

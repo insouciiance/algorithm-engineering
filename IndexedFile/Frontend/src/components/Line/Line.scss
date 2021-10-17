@@ -37,4 +37,8 @@ $line-silent-color: #0000;
     &[disabled] .Value {
         color: $disabled-color;
     }
+
+    &[highlighted="true"] .Value {
+        color: $line-accent-color;
+    }
 }

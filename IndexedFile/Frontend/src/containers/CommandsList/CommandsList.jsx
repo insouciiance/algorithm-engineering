@@ -4,16 +4,27 @@ import Command from './Command/Command';
 import classes from './CommandsList.scss';
 
 export default function CommandsList(props) {
-    const { onUpdate } = props;
+    const { onPostUpdate, onDeleteUpdate, onGetUpdate } = props;
 
     return (
         <div className={classes.CommandsListWrapper}>
-            <Command name="Add" type="text" method="post" onUpdate={onUpdate} />
+            <Command
+                name="Add"
+                type="text"
+                method="post"
+                onUpdate={onPostUpdate}
+            />
             <Command
                 name="Remove"
                 type="number"
                 method="delete"
-                onUpdate={onUpdate}
+                onUpdate={onDeleteUpdate}
+            />
+            <Command
+                name="Find"
+                type="number"
+                method="get"
+                onUpdate={onGetUpdate}
             />
         </div>
     );

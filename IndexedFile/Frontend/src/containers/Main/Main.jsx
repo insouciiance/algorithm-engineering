@@ -11,6 +11,8 @@ export default class Main extends Component {
         this.state = {
             data: [],
             indexes: [],
+            accentIndexId: -1,
+            accentDataId: -1
         };
     }
 
@@ -19,35 +21,54 @@ export default class Main extends Component {
             this.setState({
                 data: res.data.data,
                 indexes: res.data.indexes,
+                accentIndexId: -1,
+                accentDataId: -1
             });
         });
     }
 
-    onUpdate = (data, indexes) => {
+    onGetPostUpdate = (data, indexes) => {
         this.setState({
             data,
             indexes,
+            accentIndexId: -1,
+            accentDataId: -1
         });
     };
 
+    onGetUpdate = lineId => {
+        const { indexes } = this.state;
+        const dataIndex = +indexes[lineId].split(',')[1];
+
+        this.setState({
+            accentIndexId: lineId,
+            accentDataId: dataIndex
+        });
+    }
+
     render() {
+        const { indexes, data, accentIndexId, accentDataId } = this.state;
+
         return (
             <div className={classes.MainWrapper}>
                 <h2 className={classes.MainGreeting}>Indexed file test</h2>
-                <div>
-                    <CommandsList onUpdate={this.onUpdate} />
-                </div>
+                <CommandsList
+                    onPostUpdate={this.onGetPostUpdate}
+                    onDeleteUpdate={this.onGetPostUpdate}
+                    onGetUpdate={this.onGetUpdate} />
                 <div className={classes.IndexedFileContainer}>
                     <div className={classes.IndexedSection}>
                         <LinesSection
-                            data={this.state.indexes}
-                            name="Indexes" />
+                            data={indexes}
+                            name="Indexes"
+                            accentId={accentIndexId} />
                     </div>
                     <div className={classes.DataSection}>
                         <LinesSection
-                            data={this.state.data}
+                            data={data}
                             name="Data"
-                            shouldColorize={line => line.split(',')[2] === 'true'} />
+                            shouldColorize={line => line.split(',')[2] === 'true'}
+                            accentId={accentDataId}/>
                     </div>
                 </div>
             </div>
