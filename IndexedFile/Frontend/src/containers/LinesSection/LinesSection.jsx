@@ -9,8 +9,7 @@ export default function LineSection(props) {
     let lines = [];
 
     if (shouldColorize) {
-        for(let i = 0; i < data.length; i++)
-        {
+        for (let i = 0; i < data.length; i++) {
             lines.push(
                 <Line
                     id={i}
@@ -18,25 +17,21 @@ export default function LineSection(props) {
                     disabled={!shouldColorize(data[i])}
                     isHighlighted={accentId === i}>
                     {data[i]}
-                </Line>
+                </Line>,
             );
         }
     } else {
-        lines = data.map((line, id) =>
-        <Line
-            id={id}
-            key={id}
-            isHighlighted={accentId === id}>
-            {line}
-        </Line>)
+        lines = data.map((line, id) => (
+            <Line id={id} key={id} isHighlighted={accentId === id}>
+                {line}
+            </Line>
+        ));
     }
-console.log(lines);
+    console.log(lines);
     return (
         <div className={classes.LinesSectionWrapper}>
             <p>{name}</p>
-            <div className={classes.IndexesList}>
-                {lines}
-            </div>
+            <div className={classes.IndexesList}>{lines}</div>
         </div>
     );
 }

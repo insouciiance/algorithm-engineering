@@ -1,6 +1,7 @@
 @use '/src/shared/scss/shared.scss' as *;
 
 .InputWrapper {
+    background-color: $main-dark-color;
     color: $main-bright-color;
     display: flex;
     flex-direction: column;

@@ -11,7 +11,7 @@ namespace IndexedFile
     public class IndexedFileRepository : IIndexedRepository
     {
         private const int BlocksCount = 10;
-        private const int BlockValuesGap = 20;
+        private const int BlockValuesGap = 1000;
         private const int BlockSize = 10;
         private readonly string _fileName;
         private readonly string _indexedFileName;
@@ -57,6 +57,8 @@ namespace IndexedFile
             {
                 id++;
             }
+
+            id = new Random().Next(0, 10000);
 
             int blockId = id / BlockValuesGap;
             bool isIndexAdded = false;
@@ -117,9 +119,23 @@ namespace IndexedFile
                 indexWriter.WriteLine(allLines[i]);
             }
 
-            //skip after needed block
-            for (int i = BlockSize * (blockId + 1); i < allLines.Length; i++)
+            // skip after needed block
+            for (int i = BlockSize * (blockId + 1); i < BlockSize * BlocksCount; i++)
             {
+                indexWriter.WriteLine(allLines[i]);
+            }
+
+            // skip overflow block
+            for (int i = BlockSize * BlocksCount; i < allLines.Length; i++)
+            {
+                int currentId = int.Parse(allLines[i].Split(',')[0]);
+
+                if (id < currentId && !isIndexAdded)
+                {
+                    indexWriter.WriteLine($"{id},{dataLineIndex}");
+                    isIndexAdded = true;
+                }
+
                 indexWriter.WriteLine(allLines[i]);
             }
 
@@ -244,12 +260,11 @@ namespace IndexedFile
                 })
                 .ToArray();
 
-            foreach ((int elementId, int dataId) overflowLine in overflowLines)
+            (int, int)? overflowLine = BinarySearch(overflowLines);
+
+            if (overflowLine is not null)
             {
-                if (overflowLine.elementId == id)
-                {
-                    return BlocksCount * BlockSize + Array.IndexOf(overflowLines, overflowLine);
-                }
+                return BlocksCount * BlockSize + Array.IndexOf(overflowLines, overflowLine);
             }
 
             return -1;

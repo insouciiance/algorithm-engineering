@@ -12,20 +12,20 @@ $line-silent-color: #0000;
     height: 1.5rem;
 
     .Id {
-        display: inline-block;
-        height: 100%;
         border-left: 1px solid $id-separator-color;
         border-right: 1px solid $id-separator-color;
         color: $main-accent-color;
+        display: inline-block;
         font-family: monospace;
+        height: 100%;
         padding: 0 0.5rem;
     }
 
     .Value {
-        display: inline-block;
-        height: 100%;
         color: $main-bright-color;
+        display: inline-block;
         font-family: monospace;
+        height: 100%;
         padding: 0 0.5rem;
     }
 
@@ -38,7 +38,7 @@ $line-silent-color: #0000;
         color: $disabled-color;
     }
 
-    &[highlighted="true"] .Value {
+    &[highlighted='true'] .Value {
         color: $line-accent-color;
     }
 }

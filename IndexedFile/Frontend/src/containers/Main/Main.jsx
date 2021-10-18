@@ -12,7 +12,7 @@ export default class Main extends Component {
             data: [],
             indexes: [],
             accentIndexId: -1,
-            accentDataId: -1
+            accentDataId: -1,
         };
     }
 
@@ -22,7 +22,7 @@ export default class Main extends Component {
                 data: res.data.data,
                 indexes: res.data.indexes,
                 accentIndexId: -1,
-                accentDataId: -1
+                accentDataId: -1,
             });
         });
     }
@@ -32,7 +32,7 @@ export default class Main extends Component {
             data,
             indexes,
             accentIndexId: -1,
-            accentDataId: -1
+            accentDataId: -1,
         });
     };
 
@@ -42,9 +42,9 @@ export default class Main extends Component {
 
         this.setState({
             accentIndexId: lineId,
-            accentDataId: dataIndex
+            accentDataId: dataIndex,
         });
-    }
+    };
 
     render() {
         const { indexes, data, accentIndexId, accentDataId } = this.state;
@@ -55,20 +55,25 @@ export default class Main extends Component {
                 <CommandsList
                     onPostUpdate={this.onGetPostUpdate}
                     onDeleteUpdate={this.onGetPostUpdate}
-                    onGetUpdate={this.onGetUpdate} />
+                    onGetUpdate={this.onGetUpdate}
+                />
                 <div className={classes.IndexedFileContainer}>
                     <div className={classes.IndexedSection}>
                         <LinesSection
                             data={indexes}
                             name="Indexes"
-                            accentId={accentIndexId} />
+                            accentId={accentIndexId}
+                        />
                     </div>
                     <div className={classes.DataSection}>
                         <LinesSection
                             data={data}
                             name="Data"
-                            shouldColorize={line => line.split(',')[2] === 'true'}
-                            accentId={accentDataId}/>
+                            shouldColorize={line =>
+                                line.split(',')[2] === 'true'
+                            }
+                            accentId={accentDataId}
+                        />
                     </div>
                 </div>
             </div>
