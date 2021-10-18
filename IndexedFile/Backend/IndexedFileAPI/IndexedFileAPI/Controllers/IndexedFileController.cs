@@ -61,14 +61,30 @@ namespace IndexedFileAPI.Controllers
             });
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Find(int id)
+        [HttpDelete]
+        public IActionResult RemoveAll()
         {
-            int index = _repo.Find(id);
+            _repo.RemoveAll();
+
+            string[] allData = _repo.GetAllData();
+            string[] allIndexes = _repo.GetAllIndexes();
 
             return new JsonResult(new
             {
-                lineId = index
+                data = allData,
+                indexes = allIndexes
+            });
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Find(int id)
+        {
+            (int lineId, int comparisonsCount) = _repo.Find(id);
+
+            return new JsonResult(new
+            {
+                lineId,
+                comparisonsCount
             });
         } 
     }

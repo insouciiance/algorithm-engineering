@@ -11,6 +11,18 @@
     text-align: center;
 }
 
+.ComparisonsCountContainer {
+    color: $main-bright-color;
+    height: 2rem;
+
+    h4 {
+        font-size: 1rem;
+        line-height: 1rem;
+        margin: 0;
+        padding: 0.5rem;
+    }
+}
+
 .IndexedFileContainer {
     display: flex;
 

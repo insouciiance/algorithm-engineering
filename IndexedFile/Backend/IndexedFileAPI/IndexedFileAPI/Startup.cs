@@ -42,7 +42,7 @@ namespace IndexedFileAPI
                         .AllowAnyMethod());
             });
 
-            services.AddScoped<IIndexedRepository, IndexedFileRepository>();
+            services.AddSingleton<IIndexedRepository, IndexedFileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

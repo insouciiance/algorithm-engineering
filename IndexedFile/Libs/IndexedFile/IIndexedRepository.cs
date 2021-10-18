@@ -10,7 +10,8 @@ namespace IndexedFile
     {
         void Add(string item);
         bool Remove(int id);
-        int Find(int id);
+        void RemoveAll();
+        (int lineIndex, int comparisonsCount) Find(int id);
         string[] GetAllData();
         string[] GetAllIndexes();
     }

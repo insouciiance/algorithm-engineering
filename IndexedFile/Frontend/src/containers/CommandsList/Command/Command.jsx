@@ -20,45 +20,38 @@ export default class Command extends Component {
     onSubmit = event => {
         event.preventDefault();
 
-        const { method, onUpdate } = this.props;
+        const { onUpdate, onlyButton } = this.props;
         const { value } = this.state;
 
-        if (method === 'post') {
-            axios.post('indexedfile', `value=${value}`).then(res => {
-                onUpdate(res.data.data, res.data.indexes);
-            });
-        }
-
-        if (method === 'delete') {
-            axios.delete(`indexedfile/${value}`).then(res => {
-                onUpdate(res.data.data, res.data.indexes);
-            });
-        }
-
-        if (method === 'get') {
-            axios.get(`indexedfile/${value}`).then(res => {
-                onUpdate(res.data.lineId);
-            });
+        if (onlyButton) {
+            onUpdate();
+        } else {
+            onUpdate(value);
         }
     };
 
     render() {
-        const { name, type } = this.props;
+        const { name, type, onlyButton } = this.props;
+        const { value } = this.state;
 
         return (
             <form
                 className={classes.InputWrapper}
                 method="POST"
                 onSubmit={this.onSubmit}>
-                <label htmlFor={name}>{name}</label>
-                <input
-                    type={type}
-                    id={name}
-                    name={name}
-                    value={this.state.value}
-                    onChange={this.onChange}
-                />
-                <button type="submit">Submit</button>
+                {!onlyButton ? (
+                    <>
+                        <label htmlFor={name}>{name}</label>
+                        <input
+                            type={type}
+                            id={name}
+                            name={name}
+                            value={value}
+                            onChange={this.onChange}
+                        />
+                    </>
+                ) : null}
+                <button type="submit">{onlyButton ? name : 'Submit'}</button>
             </form>
         );
     }

@@ -17,6 +17,8 @@ namespace IndexedFile
         private readonly string _indexedFileName;
         private readonly List<int> _existingIndexes = new();
 
+        private static readonly Random Random = new ();
+
         public IndexedFileRepository() : this(null) { }
 
         public IndexedFileRepository(string fileName)
@@ -51,21 +53,21 @@ namespace IndexedFile
 
         public void Add(string item)
         {
-            item = item ?? throw new ArgumentNullException(nameof(item));
-            int id = 0;
-            while (_existingIndexes.Contains(id))
-            {
-                id++;
-            }
+            item ??= string.Empty;
 
-            id = new Random().Next(0, 10000);
+            int id;
+
+            do
+            {
+                id = Random.Next(0, BlocksCount * BlockValuesGap);
+            } while (_existingIndexes.Contains(id));
 
             int blockId = id / BlockValuesGap;
             bool isIndexAdded = false;
 
             string[] dataLines = File.ReadAllLines(_fileName);
 
-            int dataLineIndex = File.ReadLines(_fileName).Count();
+            int dataLineIndex = dataLines.Length;
 
             for (int i = 0; i < dataLines.Length; i++)
             {
@@ -200,16 +202,16 @@ namespace IndexedFile
 
                     int blockId = id / BlockValuesGap;
 
-                    for (int j = i + 1; j < allLines.Length; j++)
+                    for (int j = i; j < allLines.Length; j++)
                     {
-                        if (j == (blockId + 1) * BlockSize && removedLineIndex < BlocksCount * BlockSize)
+                        if (j == (blockId + 1) * BlockSize - 1 && removedLineIndex < BlocksCount * BlockSize)
                         {
                             indexWriter.WriteLine();
-                            indexWriter.WriteLine(allLines[j]);
                         }
-                        else
+
+                        if (j < allLines.Length - 1)
                         {
-                            indexWriter.WriteLine(allLines[j]);
+                            indexWriter.WriteLine(allLines[j + 1]);
                         }
                     }
 
@@ -222,9 +224,20 @@ namespace IndexedFile
             return removed;
         }
 
-        public int Find(int id)
+        public void RemoveAll()
+        {
+            int[] existingIndexes = _existingIndexes.ToArray();
+
+            foreach (int index in existingIndexes)
+            {
+                this.Remove(index);
+            }
+        }
+
+        public (int lineIndex, int comparisonsCount) Find(int id)
         {
             int blockId = id / BlockValuesGap;
+            int comparisonsCount = 0;
 
             (int, int)[] lines = File
                 .ReadAllLines(_indexedFileName)
@@ -240,11 +253,11 @@ namespace IndexedFile
                 })
                 .ToArray();
 
-            (int, int)? line = BinarySearch(lines);
+            (int, int)? line = BinarySearch(lines, 0, lines.Length);
 
             if (line is not null)
             {
-                return blockId * BlockSize + Array.IndexOf(lines, line);
+                return (blockId * BlockSize + Array.IndexOf(lines, line), comparisonsCount);
             }
 
             (int, int)[] overflowLines = File
@@ -260,28 +273,32 @@ namespace IndexedFile
                 })
                 .ToArray();
 
-            (int, int)? overflowLine = BinarySearch(overflowLines);
+            (int, int)? overflowLine = BinarySearch(overflowLines, 0, overflowLines.Length);
 
             if (overflowLine is not null)
             {
-                return BlocksCount * BlockSize + Array.IndexOf(overflowLines, overflowLine);
+                return (BlocksCount * BlockSize + Array.IndexOf(overflowLines, overflowLine), comparisonsCount);
             }
 
-            return -1;
+            return (-1, comparisonsCount);
 
-            (int, int)? BinarySearch((int, int)[] array)
+            (int, int)? BinarySearch((int, int)[] array, int bottom, int top)
             {
-                if (array.Length == 0)
+                if (top - bottom == 0)
                 {
                     return null;
                 }
 
-                (int elementId, int lineId) = array[array.Length / 2];
+                int middle = bottom + (top - bottom) / 2;
+
+                (int elementId, int lineId) = array[middle];
+
+                comparisonsCount++;
 
                 return elementId switch
                 {
-                    int i when i > id => BinarySearch(array.Take(array.Length / 2).ToArray()),
-                    int i when i < id => BinarySearch(array.Skip(array.Length / 2 + 1).ToArray()),
+                    int i when i > id => BinarySearch(array, bottom, middle),
+                    int i when i < id => BinarySearch(array, middle + 1, top),
                     _ => (elementId, lineId)
                 };
             }
