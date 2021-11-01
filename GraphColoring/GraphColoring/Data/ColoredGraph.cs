@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GraphColoring.Data
 {
-    public class ColoredGraph : ICloneable
+    public class ColoredGraph
     {
         public List<ColoredVertex> Vertices { get; }
 
@@ -85,7 +85,5 @@ namespace GraphColoring.Data
 
             return usedColors.Count;
         }
-
-        public object Clone() => new ColoredGraph(AdjacencyMatrix);
     }
 }

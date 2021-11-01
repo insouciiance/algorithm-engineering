@@ -25,7 +25,7 @@ namespace GraphColoring.Services
                     vertices.Add(new ColoredVertex(i));
                 }
 
-                for (int i = 0; i < verticesCount - 1; i++)
+                for (int i = 0; i < verticesCount; i++)
                 {
                     ColoredVertex currentVertex = vertices[i];
 
@@ -42,7 +42,9 @@ namespace GraphColoring.Services
                         {
                             int randomAdjacentVertexIndex = Random.Next(0, verticesCount);
                             adjacentVertex = vertices[randomAdjacentVertexIndex];
-                        } while (currentVertex.Equals(adjacentVertex) || currentVertex.AdjacentVertices.Contains(adjacentVertex) || adjacentVertex.Degree >= maxDegree);
+                        } while (currentVertex.Equals(adjacentVertex) 
+                                 || currentVertex.AdjacentVertices.Contains(adjacentVertex) 
+                                 || adjacentVertex.Degree >= maxDegree);
 
                         currentVertex.AdjacentVertices.Add(adjacentVertex);
                         adjacentVertex.AdjacentVertices.Add(currentVertex);
@@ -85,6 +87,27 @@ namespace GraphColoring.Services
             writer.WriteLine(matrixBuilder);
 
             return graph;
+        }
+
+        public static ColoredGraph GenerateFromFile(string fileName)
+        {
+            StreamReader reader = new(fileName);
+
+            int verticesCount = int.Parse(reader.ReadLine()!);
+
+            bool[,] adjacencyMatrix = new bool[verticesCount, verticesCount];
+
+            for (int i = 0; i < verticesCount; i++)
+            {
+                string[] bools = reader.ReadLine()!.Split(' ');
+
+                for (int j = 0; j < verticesCount; j++)
+                {
+                    adjacencyMatrix[i, j] = bools[j] == "1";
+                }
+            }
+
+            return new ColoredGraph(adjacencyMatrix);
         }
     }
 }

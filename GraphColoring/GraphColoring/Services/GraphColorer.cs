@@ -12,44 +12,34 @@ namespace GraphColoring.Services
 
         public ColoredGraph ColoredGraph;
 
-        private int _employedBeesCount = 5;
-        private int _onlookerBeesCount = 55;
-
         public GraphColorer(ColoredGraph graph)
         {
-            ColoredGraph = (ColoredGraph)graph.Clone();
+            ColoredGraph = new ColoredGraph(graph.AdjacencyMatrix);
         }
 
-        public ColoredGraph Color(int iterationsCount = 1)
+        public ColoredGraph Color()
         {
             List<ColoredVertex> closedVertices = new();
             List<EmployedBee> dancingBees = new();
 
-            ColoredGraph graph = (ColoredGraph)ColoredGraph.Clone();
+            ColoredGraph graph = new (ColoredGraph.AdjacencyMatrix);
+            int employedBeesCount = 5;
+            int onlookerBeesCount = 55;
 
-            for (int i = 0; i < iterationsCount; i++)
+            do
             {
-                while (graph.ChromaticNumber < 0)
-                {
-                    dancingBees.Clear();
-                    closedVertices.Clear();
+                RunEmployedPhase();
+                RunOnlookerPhase();
+                RunScoutPhase();
+            } while (graph.ChromaticNumber < 0);
 
-                    RunEmployedPhase();
-                    RunOnlookerPhase();
-                    RunScoutPhase();
-                }
-
-                if (graph.ChromaticNumber < ColoredGraph.ChromaticNumber || ColoredGraph.ChromaticNumber < 0)
-                {
-                    ColoredGraph = graph;
-                }
-            }
+            ColoredGraph = graph;
 
             return ColoredGraph;
 
             void RunEmployedPhase()
             {
-                for (int i = 0; i < _employedBeesCount; i++)
+                for (int i = 0; i < employedBeesCount; i++)
                 {
                     if (dancingBees.Count + closedVertices.Count >= graph.VerticesCount)
                     {
@@ -76,9 +66,10 @@ namespace GraphColoring.Services
             void RunOnlookerPhase()
             {
                 List<OnlookerBee> onlookers = new();
+
                 int nectarAmount = dancingBees.Sum(b => b.Nectar);
 
-                for (int i = 0; i < _onlookerBeesCount; i++)
+                for (int i = 0; i < onlookerBeesCount; i++)
                 {
                     if (onlookers.Count >= dancingBees.Select(bee => bee.Vertex).Sum(v => v.UncoloredDegree))
                     {
@@ -104,7 +95,7 @@ namespace GraphColoring.Services
                             if (employedBee.Vertex.UncoloredDegree <= onlookers.Count(o => o.Vertex.Equals(employedBee.Vertex))) break;
 
                             ColoredVertex adjacentVertex = employedBee.Vertex.AdjacentVertices
-                                .First(v => !onlookers.Any(o => o.Vertex.Equals(employedBee.Vertex) && o.AdjacentVertex.Equals(v)));
+                                .First(v => !onlookers.Any(o => o.Vertex.Equals(employedBee.Vertex) && o.AdjacentVertex.Equals(v)) && v.Color is null);
 
                             OnlookerBee onlooker = new(employedBee.Vertex, adjacentVertex);
                             onlookers.Add(onlooker);
@@ -129,10 +120,17 @@ namespace GraphColoring.Services
 
                     uncoloredVertex.Color = newColor;
                 }
+            }
 
-                foreach (EmployedBee dancingBee in dancingBees)
+            void RunScoutPhase()
+            {
+                foreach (EmployedBee employedBee in dancingBees)
                 {
-                    ColoredVertex foodSource = dancingBee.Vertex;
+                    if (employedBee.Vertex.UncoloredDegree != 0) continue;
+
+                    employedBeesCount++;
+
+                    ColoredVertex foodSource = employedBee.Vertex;
 
                     List<int> forbiddenColors = foodSource.ForbiddenColors;
 
@@ -144,22 +142,14 @@ namespace GraphColoring.Services
                     }
 
                     foodSource.Color = newColor;
-                }
-            }
 
-            void RunScoutPhase()
-            {
-                foreach (EmployedBee employedBee in dancingBees)
-                {
-                    if (employedBee.Vertex.UncoloredDegree != 0) continue;
-
-                    _employedBeesCount++;
-
-                    if (!closedVertices.Contains(employedBee.Vertex))
+                    if (!closedVertices.Contains(foodSource))
                     {
-                        closedVertices.Add(employedBee.Vertex);
+                        closedVertices.Add(foodSource);
                     }
                 }
+
+                dancingBees.Clear();
             }
         }
     }
