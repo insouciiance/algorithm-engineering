@@ -40,9 +40,9 @@ namespace GraphColoring.Services
 
                         do
                         {
-                            int randomAdjacentVertexIndex = Random.Next(i + 1, verticesCount);
+                            int randomAdjacentVertexIndex = Random.Next(0, verticesCount);
                             adjacentVertex = vertices[randomAdjacentVertexIndex];
-                        } while (currentVertex.AdjacentVertices.Contains(adjacentVertex) || adjacentVertex.Degree >= maxDegree);
+                        } while (currentVertex.Equals(adjacentVertex) || currentVertex.AdjacentVertices.Contains(adjacentVertex) || adjacentVertex.Degree >= maxDegree);
 
                         currentVertex.AdjacentVertices.Add(adjacentVertex);
                         adjacentVertex.AdjacentVertices.Add(currentVertex);
