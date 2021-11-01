@@ -1,20 +1,23 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace GraphColoring.Data
 {
-    public class ColoredVertex : IVertex<ColoredVertex>
+    public class ColoredVertex : IEquatable<ColoredVertex>
     {
         public int Index { get; }
 
-        public Color? Color { get; set; }
+        public int? Color { get; set; }
 
         public List<ColoredVertex> AdjacentVertices { get; set; }
 
         public int Degree => AdjacentVertices.Count;
 
-        public List<Color> ForbiddenColors => GetForbiddenColors(); 
+        public int UncoloredDegree => AdjacentVertices.Count(v => v.Color is null);
+
+        public List<int> ForbiddenColors => GetForbiddenColors(); 
 
         public ColoredVertex(int index, IEnumerable<ColoredVertex> adjacentVertices = null)
         {
@@ -22,13 +25,13 @@ namespace GraphColoring.Data
             AdjacentVertices = adjacentVertices?.ToList() ?? new List<ColoredVertex>();
         }
 
-        private List<Color> GetForbiddenColors()
+        private List<int> GetForbiddenColors()
         {
-            List<Color> forbiddenColors = new();
+            List<int> forbiddenColors = new();
 
             foreach(ColoredVertex vertex in AdjacentVertices)
             {
-                Color? vertexColor = vertex.Color;
+                int? vertexColor = vertex.Color;
 
                 if (vertexColor is null || forbiddenColors.Contains(vertexColor.Value))
                 {
@@ -54,19 +57,16 @@ namespace GraphColoring.Data
             return sb.ToString();
         }
 
-        public bool Equals(IVertex<ColoredVertex> other)
+        public bool Equals(ColoredVertex other)
         {
-            ColoredVertex otherColored = other as ColoredVertex;
-
             if (other is null)
             {
                 return false;
             }
 
-            return  this.Color == otherColored.Color &&
-                    this.Index == otherColored.Index &&
-                    this.Degree == otherColored.Degree &&
-                    Enumerable.SequenceEqual(this.AdjacentVertices, otherColored.AdjacentVertices);
+            return this.Color == other.Color &&
+                   this.Index == other.Index &&
+                   this.Degree == other.Degree;
         }
     }
 }

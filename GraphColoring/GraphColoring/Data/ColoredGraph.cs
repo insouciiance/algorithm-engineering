@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace GraphColoring.Data
 {
-    public class ColoredGraph : IGraph<ColoredVertex>
+    public class ColoredGraph
     {
         public List<ColoredVertex> Vertices { get; }
 
@@ -11,27 +12,41 @@ namespace GraphColoring.Data
 
         public int ChromaticNumber => GetChromaticNumber();
 
-        public ColoredGraph(Graph graph)
+        public ColoredGraph(bool[,] adjacencyMatrix)
         {
+            int verticesCount = adjacencyMatrix.GetLength(0);
+
             Vertices = new List<ColoredVertex>();
 
-            foreach(Vertex vertex in graph.Vertices)
+            for (int i = 0; i < verticesCount; i++)
             {
-                IEnumerable<ColoredVertex> adjacentVertices = 
-                    vertex.AdjacentVertices.Select(v => new ColoredVertex(v.Index));
-                Vertices.Add(new ColoredVertex(vertex.Index, adjacentVertices));
+                Vertices.Add(new ColoredVertex(i));
+            }
+
+            for (int i = 0; i < verticesCount; i++)
+            {
+                for (int j = 0; j < verticesCount; j++)
+                {
+                    if (adjacencyMatrix[i, j])
+                    {
+                        Vertices[i].AdjacentVertices.Add(Vertices[j]);
+                    }
+                }
             }
         }
 
-        public ColoredGraph(bool[,] adjacencyMatrix) : this(new Graph(adjacencyMatrix)) {}
+        public ColoredGraph(List<ColoredVertex> vertices)
+        {
+            Vertices = vertices;
+        }
 
         private int GetChromaticNumber()
         {
-            List<Color> usedColors = new ();
+            List<int> usedColors = new ();
 
             foreach(ColoredVertex vertex in Vertices)
             {
-                Color? vertexColor = vertex.Color;
+                int? vertexColor = vertex.Color;
 
                 if (vertexColor is null)
                 {

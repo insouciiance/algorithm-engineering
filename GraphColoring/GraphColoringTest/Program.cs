@@ -2,24 +2,26 @@
 using GraphColoring.Data;
 using GraphColoring.Services;
 
-namespace GraphColorerTest
+namespace GraphColoringTest
 {
     class Program
     {
         static void Main(string[] args)
-        {   
-            Graph graph = new Graph(new bool[3, 3] {
-                { false, true, true },
-                { true, false, true },
-                { true, true, false },
-            });
+        {
+            ColoredGraph graph = ColoredGraphGenerator.GenerateFile(250, 2, 30, "graph.txt");
 
-            foreach(Vertex v in graph.Vertices)
+            ColoredGraph g = new GraphColorer(graph).Color();
+
+            foreach (ColoredVertex v in g.Vertices)
             {
                 Console.WriteLine(v);
             }
 
-            ColoredGraph g = new GraphColorer(graph).Color();
+            Console.WriteLine(g.ChromaticNumber);
+
+            Console.WriteLine("Success");
+
+            Console.ReadKey();
         }
     }
 }
