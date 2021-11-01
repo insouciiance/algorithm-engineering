@@ -17,22 +17,32 @@ namespace GraphColoring.Services
 
         public GraphColorer(ColoredGraph graph)
         {
-            ColoredGraph = graph;
+            ColoredGraph = (ColoredGraph)graph.Clone();
         }
 
-        public ColoredGraph Color()
+        public ColoredGraph Color(int iterationsCount = 1)
         {
             List<ColoredVertex> closedVertices = new();
             List<EmployedBee> dancingBees = new();
 
-            while (ColoredGraph.ChromaticNumber < 0)
-            {
-                dancingBees.Clear();
-                closedVertices.Clear();
+            ColoredGraph graph = (ColoredGraph)ColoredGraph.Clone();
 
-                RunEmployedPhase();
-                RunOnlookerPhase();
-                RunScoutPhase();
+            for (int i = 0; i < iterationsCount; i++)
+            {
+                while (graph.ChromaticNumber < 0)
+                {
+                    dancingBees.Clear();
+                    closedVertices.Clear();
+
+                    RunEmployedPhase();
+                    RunOnlookerPhase();
+                    RunScoutPhase();
+                }
+
+                if (graph.ChromaticNumber < ColoredGraph.ChromaticNumber || ColoredGraph.ChromaticNumber < 0)
+                {
+                    ColoredGraph = graph;
+                }
             }
 
             return ColoredGraph;
@@ -41,15 +51,15 @@ namespace GraphColoring.Services
             {
                 for (int i = 0; i < _employedBeesCount; i++)
                 {
-                    if (dancingBees.Count + closedVertices.Count >= ColoredGraph.VerticesCount)
+                    if (dancingBees.Count + closedVertices.Count >= graph.VerticesCount)
                     {
                         break;
                     }
 
                     while (true)
                     {
-                        int randomVertexIndex = Random.Next(0, ColoredGraph.VerticesCount);
-                        ColoredVertex randomVertex = ColoredGraph.Vertices[randomVertexIndex];
+                        int randomVertexIndex = Random.Next(0, graph.VerticesCount);
+                        ColoredVertex randomVertex = graph.Vertices[randomVertexIndex];
 
                         EmployedBee employedBee = new(randomVertex);
 
@@ -144,7 +154,6 @@ namespace GraphColoring.Services
                     if (employedBee.Vertex.UncoloredDegree != 0) continue;
 
                     _employedBeesCount++;
-                    _onlookerBeesCount--;
 
                     if (!closedVertices.Contains(employedBee.Vertex))
                     {

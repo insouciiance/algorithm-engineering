@@ -4,9 +4,11 @@ using System.Linq;
 
 namespace GraphColoring.Data
 {
-    public class ColoredGraph
+    public class ColoredGraph : ICloneable
     {
         public List<ColoredVertex> Vertices { get; }
+
+        public bool[,] AdjacencyMatrix { get; }
 
         public int VerticesCount => Vertices.Count;
 
@@ -33,11 +35,33 @@ namespace GraphColoring.Data
                     }
                 }
             }
+
+            AdjacencyMatrix = adjacencyMatrix;
         }
 
         public ColoredGraph(List<ColoredVertex> vertices)
         {
             Vertices = vertices;
+            int verticesCount = vertices.Count;
+            
+            bool[,] adjacencyMatrix = new bool[verticesCount, verticesCount];
+
+            for (int i = 0; i < verticesCount; i++)
+            {
+                for (int j = 0; j < verticesCount; j++)
+                {
+                    if (Vertices[i].AdjacentVertices.Contains(Vertices[j]))
+                    {
+                        adjacencyMatrix[i, j] = true;
+                    }
+                    else
+                    {
+                        adjacencyMatrix[i, j] = false;
+                    }
+                }
+            }
+
+            AdjacencyMatrix = adjacencyMatrix;
         }
 
         private int GetChromaticNumber()
@@ -61,5 +85,7 @@ namespace GraphColoring.Data
 
             return usedColors.Count;
         }
+
+        public object Clone() => new ColoredGraph(AdjacencyMatrix);
     }
 }

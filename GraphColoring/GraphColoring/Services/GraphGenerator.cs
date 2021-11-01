@@ -16,33 +16,39 @@ namespace GraphColoring.Services
         {
             List<ColoredVertex> vertices = new();
 
-            for (int i = 0; i < verticesCount; i++)
+            do
             {
-                vertices.Add(new ColoredVertex(i));
-            }
+                vertices.Clear();
 
-            for (int i = 0; i < verticesCount; i++)
-            {
-                ColoredVertex currentVertex = vertices[i];
-
-                int adjacentVerticesCount = Random.Next(minDegree, maxDegree + 1) - currentVertex.Degree;
-
-                for (int j = 0; j < adjacentVerticesCount; j++)
+                for (int i = 0; i < verticesCount; i++)
                 {
-                    ColoredVertex adjacentVertex;
-                    int randomAdjacentVertexIndex;
-
-                    do
-                    {
-                        randomAdjacentVertexIndex = Random.Next(0, verticesCount);
-                        adjacentVertex = vertices[randomAdjacentVertexIndex];
-
-                    } while (randomAdjacentVertexIndex == i || currentVertex.AdjacentVertices.Contains(adjacentVertex));
-
-                    currentVertex.AdjacentVertices.Add(adjacentVertex);
-                    adjacentVertex.AdjacentVertices.Add(currentVertex);
+                    vertices.Add(new ColoredVertex(i));
                 }
-            }
+
+                for (int i = 0; i < verticesCount - 1; i++)
+                {
+                    ColoredVertex currentVertex = vertices[i];
+
+                    int upperBound = currentVertex.Degree > maxDegree ? 0 : maxDegree - currentVertex.Degree;
+                    int lowerBound = currentVertex.Degree < minDegree ? minDegree - currentVertex.Degree : 0;
+
+                    int adjacentVerticesCount = Random.Next(lowerBound, upperBound + 1);
+
+                    for (int j = 0; j < adjacentVerticesCount; j++)
+                    {
+                        ColoredVertex adjacentVertex;
+
+                        do
+                        {
+                            int randomAdjacentVertexIndex = Random.Next(i + 1, verticesCount);
+                            adjacentVertex = vertices[randomAdjacentVertexIndex];
+                        } while (currentVertex.AdjacentVertices.Contains(adjacentVertex) || adjacentVertex.Degree >= maxDegree);
+
+                        currentVertex.AdjacentVertices.Add(adjacentVertex);
+                        adjacentVertex.AdjacentVertices.Add(currentVertex);
+                    }
+                }
+            } while (vertices.Any(v => v.Degree < minDegree || v.Degree > maxDegree));
 
             return new ColoredGraph(vertices);
         }

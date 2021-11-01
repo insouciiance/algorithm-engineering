@@ -8,16 +8,15 @@ namespace GraphColoringTest
     {
         static void Main(string[] args)
         {
-            ColoredGraph graph = ColoredGraphGenerator.GenerateFile(250, 2, 30, "graph.txt");
+            ColoredGraph graph = ColoredGraphGenerator.GenerateFile(10, 2, 3, "graph.txt");
+            GraphColorer colorer = new (graph);
 
-            ColoredGraph g = new GraphColorer(graph).Color();
-
-            foreach (ColoredVertex v in g.Vertices)
+            for (int i = 1; i < 1000; i++)
             {
-                Console.WriteLine(v);
-            }
+                ColoredGraph g = colorer.Color(i);
 
-            Console.WriteLine(g.ChromaticNumber);
+                Console.WriteLine(g.ChromaticNumber);
+            }
 
             Console.WriteLine("Success");
 
