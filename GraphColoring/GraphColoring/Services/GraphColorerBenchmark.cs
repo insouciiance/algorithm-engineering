@@ -29,7 +29,7 @@ namespace GraphColoring.Services
                     result = currentResult;
                 }
 
-                if (i % 20 == 0)
+                if (i % 20 == 0 || i == 1)
                 {
                     Console.WriteLine($"iteration: {i, -3} chromatic number: {result.ChromaticNumber}");
                 }
