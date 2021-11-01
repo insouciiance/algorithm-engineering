@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace GraphColoring.Data
 {
@@ -84,6 +85,22 @@ namespace GraphColoring.Data
             }
 
             return usedColors.Count;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new();
+
+            sb.AppendLine($"Vertices count: {VerticesCount}");
+            sb.AppendLine($"Chromatic number: {ChromaticNumber}");
+
+            foreach (ColoredVertex coloredVertex in Vertices)
+            {
+                sb.AppendLine();
+                sb.Append(coloredVertex);
+            }
+
+            return sb.ToString();
         }
     }
 }
