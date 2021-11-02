@@ -8,7 +8,7 @@ namespace GraphColoringTest
     {
         static void Main(string[] args)
         {
-            ColoredGraph graph = ColoredGraphGenerator.GenerateFromFile("graph.txt");
+            ColoredGraph graph = ColoredGraphGenerator.Generate(300, 1, 30);
             GraphColorer colorer = new (graph);
 
             GraphColorerBenchmark benchmark = new(colorer);
