@@ -1,4 +1,6 @@
 ﻿using System;
+using TravelingSalesman;
+using TravelingSalesman.Services;
 
 namespace TravelingSalesmanTest
 {
@@ -6,7 +8,9 @@ namespace TravelingSalesmanTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Graph graph = GraphGenerator.GenerateFullGraph(4, (v1, v2) => v2.Index - v1.Index);
+
+            Console.WriteLine(graph); 
         }
     }
 }
