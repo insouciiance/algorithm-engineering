@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TravelingSalesman
@@ -14,6 +15,11 @@ namespace TravelingSalesman
         {
             Index = index;
             Edges = edges ?? new List<Edge>();
+        }
+
+        public Edge GetAdjacentEdge(Vertex other)
+        {
+            return Edges.FirstOrDefault(e => e.GetAdjacentVertex(this).Equals(other));
         }
 
         public bool Equals(Vertex other)

@@ -13,7 +13,7 @@ namespace TravelingSalesman
 
         public Graph(IEnumerable<Vertex> vertices)
         {
-            Vertices = vertices?.ToList() ?? throw new ArgumentNullException();
+            Vertices = vertices?.ToList() ?? throw new ArgumentNullException(nameof(vertices));
         }
 
         public override string ToString()
