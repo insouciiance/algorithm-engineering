@@ -29,5 +29,31 @@ namespace TravelingSalesman.Services
 
             return new Route(vertices);
         }
+
+        public static Route GenerateAdjacentRoute(Route route)
+        {
+            if (route.Vertices.Length < 3)
+            {
+                return route;
+            }
+
+            Vertex[] vertices = new Vertex[route.Vertices.Length];
+
+            route.Vertices.CopyTo(vertices, 0);
+
+            int firstSwapIndex = Random.Next(0, vertices.Length);
+
+            int secondSwapIndex;
+            do
+            {
+                secondSwapIndex = Random.Next(0, vertices.Length);
+            } while (firstSwapIndex == secondSwapIndex);
+
+            Vertex temp = vertices[firstSwapIndex];
+            vertices[firstSwapIndex] = vertices[secondSwapIndex];
+            vertices[secondSwapIndex] = temp;
+
+            return new Route(vertices);
+        }
     }
 }

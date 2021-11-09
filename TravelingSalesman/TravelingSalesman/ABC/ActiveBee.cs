@@ -2,44 +2,19 @@ using System;
 
 namespace TravelingSalesman.ABC
 {
-    public class ActiveBee : Bee
+    public class ActiveBee<T> : Bee<T> where T : IOptimizable
     {
-        private static readonly Random Random = new(); 
+        public sealed override T NectarSource { get; set; }
 
-        public sealed override Route Route { get; set; }
+        public ScoutBee<T> Initiator { get; set; }
 
-        public ScoutBee Initiator { get; set; }
-
-        public ActiveBee(ScoutBee initiator)
+        public ActiveBee(ScoutBee<T> initiator, Func<T, T> adjacentSourceGenerator)
         {
             Initiator = initiator;
-            Route = initiator.Route;
+            NectarSource = initiator.NectarSource;
+            AdjacentSourceGenerator = adjacentSourceGenerator;
         }
 
-        public Route GenerateAdjacentRoute()
-        {
-            if (Route.Vertices.Length < 3)
-            {
-                return Route;
-            }
-
-            Vertex[] vertices = new Vertex[Route.Vertices.Length];
-
-            Route.Vertices.CopyTo(vertices, 0);
-
-            int firstSwapIndex = Random.Next(0, vertices.Length);
-
-            int secondSwapIndex;
-            do
-            {
-                secondSwapIndex = Random.Next(0, vertices.Length);
-            } while (firstSwapIndex == secondSwapIndex);
-
-            Vertex temp = vertices[firstSwapIndex];
-            vertices[firstSwapIndex] = vertices[secondSwapIndex];
-            vertices[secondSwapIndex] = temp;
-
-            return new Route(vertices);
-        }
+        public Func<T, T> AdjacentSourceGenerator { get; }
     }
 }

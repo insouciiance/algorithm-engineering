@@ -1,15 +1,15 @@
 namespace TravelingSalesman.ABC
 {
-    public class ScoutBee : Bee
+    public class ScoutBee<T> : Bee<T> where T : IOptimizable
     {
         public int NectarSourceId { get; }
 
-        public sealed override Route Route { get; set; }
+        public sealed override T NectarSource { get; set; }
 
-        public ScoutBee(Route route, int nectarSourceId)
+        public ScoutBee(T nectarSource, int nectarSourceId)
         {
             NectarSourceId = nectarSourceId;
-            Route = route;
+            NectarSource = nectarSource;
         }
     }
 }

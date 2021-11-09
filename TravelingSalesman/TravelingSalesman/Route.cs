@@ -5,11 +5,13 @@ using System.Collections.Generic;
 
 namespace TravelingSalesman
 {
-    public class Route
+    public class Route : IOptimizable
     {
         public Vertex[] Vertices { get; }
 
-        public int TotalCost
+        public bool IsAscending => false;
+
+        public double TotalCost
         {
             get
             {

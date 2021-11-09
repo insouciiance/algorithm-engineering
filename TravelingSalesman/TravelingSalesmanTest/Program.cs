@@ -12,7 +12,7 @@ namespace TravelingSalesmanTest
         {
             Graph graph = GraphGenerator.GenerateFullGraph(300, 5, 150);
 
-            Hive hive = new(graph);
+            Hive<Route> hive = new(graph, RouteGenerator.GenerateRandomRoute, RouteGenerator.GenerateAdjacentRoute);
 
             hive.Solve(true);
         }

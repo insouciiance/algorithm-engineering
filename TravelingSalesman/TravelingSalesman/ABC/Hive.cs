@@ -4,7 +4,7 @@ using TravelingSalesman.Services;
 
 namespace TravelingSalesman.ABC
 {
-    public class Hive
+    public class Hive<T> where T : IOptimizable
     {
         private static readonly Random Random = new();
 
@@ -17,26 +17,31 @@ namespace TravelingSalesman.ABC
 
         public Graph Graph { get; }
 
-        public Hive(Graph graph)
+        public Func<Graph, T> InitialSourceGenerator { get; }
+        public Func<T, T> AdjacentSourceGenerator { get; }
+
+        public Hive(Graph graph, Func<Graph, T> initialSourceGenerator, Func<T, T> adjacentSourceGenerator)
         {
             Graph = graph;
+            InitialSourceGenerator = initialSourceGenerator;
+            AdjacentSourceGenerator = adjacentSourceGenerator;
         }
 
-        public Route Solve(bool logResults = false)
+        public T Solve(bool logResults = false)
         {
-            Route[] nectarSources = new Route[NectarSourcesCount];
+            T[] nectarSources = new T[NectarSourcesCount];
 
             for(int i = 0; i < NectarSourcesCount; i++)
             {
-                nectarSources[i] = RouteGenerator.GenerateRandomRoute(Graph);
+                nectarSources[i] = InitialSourceGenerator(Graph);
             }
 
             int maxPossibleScoutsCount = Math.Min(ScoutBeesCount, NectarSourcesCount);
             
-            ScoutBee[] scoutBees;
-            ActiveBee[] activeBees = new ActiveBee[ActiveBeesCount];
+            ScoutBee<T>[] scoutBees;
+            ActiveBee<T>[] activeBees = new ActiveBee<T>[ActiveBeesCount];
 
-            Route bestRoute = null;
+            T bestSource = default;
 
             for (int i = 1; i <= IterationsCount; i++)
             {
@@ -44,66 +49,66 @@ namespace TravelingSalesman.ABC
                 DoWaggleDance();
                 RunActivePhase();
 
-                foreach (ScoutBee scout in scoutBees)
+                foreach (ScoutBee<T> scout in scoutBees)
                 {
-                    if (scout.Route.TotalCost < nectarSources[scout.NectarSourceId].TotalCost)
+                    if (scout.NectarSource.TotalCost < nectarSources[scout.NectarSourceId].TotalCost)
                     {
                         double randomProbability = Random.NextDouble();
 
                         if (randomProbability < PersuasionProbability)
                         {
-                            nectarSources[scout.NectarSourceId] = scout.Route;
+                            nectarSources[scout.NectarSourceId] = scout.NectarSource;
                         }
                     }
                 }
 
-                bestRoute = (from nectarSource in nectarSources
+                bestSource = (from nectarSource in nectarSources
                     orderby nectarSource.TotalCost
                     select nectarSource).First();
 
                 if (logResults && (i % 5 == 0 || i == 1))
                 {
-                    Console.WriteLine($"Iteration: {i, -3} cost: {bestRoute.TotalCost}");
+                    Console.WriteLine($"Iteration: {i, -3} cost: {bestSource.TotalCost}");
                 }
             }
 
-            return bestRoute;
+            return bestSource;
 
             void RunScoutPhase()
             {
-                scoutBees = new ScoutBee[maxPossibleScoutsCount];
+                scoutBees = new ScoutBee<T>[maxPossibleScoutsCount];
 
                 for(int i = 0; i < maxPossibleScoutsCount; i++)
                 {
-                    Route nectarSource;
+                    T nectarSource;
                     int randomSourceIndex;
                     do
                     {
                         randomSourceIndex = Random.Next(0, NectarSourcesCount);
                         nectarSource = nectarSources[randomSourceIndex];
-                    } while(scoutBees.Any(s => s is not null && nectarSource.Equals(s.Route)));
+                    } while(scoutBees.Any(s => s is not null && nectarSource.Equals(s.NectarSource)));
 
-                    scoutBees[i] = new ScoutBee(nectarSource, randomSourceIndex);
+                    scoutBees[i] = new ScoutBee<T>(nectarSource, randomSourceIndex);
                 }
             }
 
             void DoWaggleDance()
             {
-                double nectarSum = scoutBees.Sum(s => 1d / s.Route.TotalCost);
+                double nectarSum = scoutBees.Sum(s => 1d / s.NectarSource.TotalCost);
 
                 for(int i = 0; i < ActiveBeesCount; i++)
                 {
                     double randomNectar = Random.NextDouble() * nectarSum;
                     double currentNectarSum = 0;
                     
-                    foreach(ScoutBee scout in scoutBees)
+                    foreach(ScoutBee<T> scout in scoutBees)
                     {
-                        double currentNectar = 1d / scout.Route.TotalCost;
+                        double currentNectar = 1d / scout.NectarSource.TotalCost;
                         currentNectarSum += currentNectar;
 
                         if (randomNectar < currentNectarSum)
                         {
-                            activeBees[i] = new ActiveBee(scout);
+                            activeBees[i] = new ActiveBee<T>(scout, AdjacentSourceGenerator);
                             break;
                         }
                     }
@@ -112,20 +117,20 @@ namespace TravelingSalesman.ABC
 
             void RunActivePhase()
             {
-                foreach(ActiveBee active in activeBees)
+                foreach(ActiveBee<T> active in activeBees)
                 {
-                    Route adjacentRoute = active.GenerateAdjacentRoute();
+                    T adjacentRoute = active.AdjacentSourceGenerator.Invoke(active.NectarSource);
 
                     double randomProbability = Random.NextDouble();
 
-                    if (adjacentRoute.TotalCost < active.Initiator.Route.TotalCost && randomProbability > MistakeProbability)
+                    if (adjacentRoute.TotalCost < active.Initiator.NectarSource.TotalCost && randomProbability > MistakeProbability)
                     {
-                        active.Initiator.Route = adjacentRoute;
+                        active.Initiator.NectarSource = adjacentRoute;
                     }
 
-                    if (adjacentRoute.TotalCost >= active.Initiator.Route.TotalCost && randomProbability < MistakeProbability)
+                    if (adjacentRoute.TotalCost >= active.Initiator.NectarSource.TotalCost && randomProbability < MistakeProbability)
                     {
-                        active.Initiator.Route = adjacentRoute;
+                        active.Initiator.NectarSource = adjacentRoute;
                     }
                 }
             }
