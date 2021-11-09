@@ -1,4 +1,4 @@
-namespace TravelingSalesman.ABC
+namespace ArtificialBeeColony.Core
 {
     public abstract class Bee<T> where T : IOptimizable
     {

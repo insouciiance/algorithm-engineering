@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ArtificialBeeColony;
+using ArtificialBeeColony.Core;
 using TravelingSalesman;
-using TravelingSalesman.ABC;
 using TravelingSalesman.Services;
 
 namespace TravelingSalesmanTest

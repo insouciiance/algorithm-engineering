@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
-using TravelingSalesman.Services;
 
-namespace TravelingSalesman.ABC
+namespace ArtificialBeeColony.Core
 {
     public class Hive<T> where T : IOptimizable
     {

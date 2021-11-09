@@ -1,6 +1,6 @@
 using System;
 
-namespace TravelingSalesman
+namespace ArtificialBeeColony
 {
     public class Edge
     {

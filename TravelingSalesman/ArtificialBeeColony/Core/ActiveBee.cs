@@ -1,6 +1,6 @@
 using System;
 
-namespace TravelingSalesman.ABC
+namespace ArtificialBeeColony.Core
 {
     public class ActiveBee<T> : Bee<T> where T : IOptimizable
     {

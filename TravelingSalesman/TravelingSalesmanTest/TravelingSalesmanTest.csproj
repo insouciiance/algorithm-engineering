@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ArtificialBeeColony\ArtificialBeeColony.csproj" />
     <ProjectReference Include="..\TravelingSalesman\TravelingSalesman.csproj" />
   </ItemGroup>
 

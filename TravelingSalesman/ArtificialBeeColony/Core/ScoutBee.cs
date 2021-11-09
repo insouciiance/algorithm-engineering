@@ -1,4 +1,4 @@
-namespace TravelingSalesman.ABC
+namespace ArtificialBeeColony.Core
 {
     public class ScoutBee<T> : Bee<T> where T : IOptimizable
     {
