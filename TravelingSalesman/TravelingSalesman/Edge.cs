@@ -13,8 +13,8 @@ namespace TravelingSalesman
         public Edge(int weight, Vertex firstVertex, Vertex secondVertex)
         {
             Weight = weight;
-            FirstVertex = firstVertex ?? throw new ArgumentNullException(nameof(FirstVertex));
-            SecondVertex = secondVertex ?? throw new ArgumentNullException(nameof(SecondVertex));
+            FirstVertex = firstVertex ?? throw new ArgumentNullException(nameof(firstVertex));
+            SecondVertex = secondVertex ?? throw new ArgumentNullException(nameof(secondVertex));
         }
 
         public Vertex GetAdjacentVertex(Vertex vertex)

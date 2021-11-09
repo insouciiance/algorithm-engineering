@@ -38,6 +38,11 @@ namespace TravelingSalesman.Services
 
         public static Graph GenerateFullGraph(int verticesCount, Func<Vertex, Vertex, int> weightFunc)
         {
+            if (weightFunc is null)
+            {
+                throw new ArgumentNullException(nameof(weightFunc));
+            }
+
             Vertex[] vertices = new Vertex[verticesCount];
 
             for(int i = 0; i < verticesCount; i++)

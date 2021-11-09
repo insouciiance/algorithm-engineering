@@ -11,7 +11,7 @@ namespace TravelingSalesman.Services
         {
             if (graph is null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(graph));
             }
 
             Vertex[] vertices = new Vertex[graph.VerticesCount];
