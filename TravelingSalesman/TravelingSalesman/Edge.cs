@@ -1,3 +1,5 @@
+using System;
+
 namespace TravelingSalesman
 {
     public class Edge
@@ -11,8 +13,8 @@ namespace TravelingSalesman
         public Edge(int weight, Vertex firstVertex, Vertex secondVertex)
         {
             Weight = weight;
-            FirstVertex = firstVertex;
-            SecondVertex = secondVertex;
+            FirstVertex = firstVertex ?? throw new ArgumentNullException(nameof(FirstVertex));
+            SecondVertex = secondVertex ?? throw new ArgumentNullException(nameof(SecondVertex));
         }
 
         public Vertex GetAdjacentVertex(Vertex vertex)
