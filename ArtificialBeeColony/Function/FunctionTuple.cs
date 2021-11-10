@@ -13,7 +13,7 @@ namespace Function
      
         public bool BetterThan(IOptimizable other)
         {
-            if (other is null) throw new ArgumentNullException();
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             if (other is not FunctionTuple otherTuple) throw new InvalidCastException();
 
@@ -22,7 +22,7 @@ namespace Function
 
         public int CompareTo(IOptimizable other)
         {
-            if (other is null) throw new ArgumentNullException();
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             if (other is not FunctionTuple otherTuple) throw new InvalidCastException();
 

@@ -15,7 +15,7 @@ namespace TravelingSalesmanTest
 
             Hive<Route, Graph> hive = new(graph, RouteGenerator.GenerateRandomRoute, RouteGenerator.GenerateAdjacentRoute);
 
-            hive.Solve(true);
+            hive.Solve(true, true);
         }
     }
 }

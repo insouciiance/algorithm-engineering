@@ -9,7 +9,7 @@ namespace ArtificialBeeColony.Core
 
         public const int ScoutBeesCount = 5;
         public const int ActiveBeesCount = 50;
-        public const int NectarSourcesCount = 15;
+        public const int NectarSourcesCount = 500;
         public const int IterationsCount = 10000;
         public const double MistakeProbability = 0.05d;
         public const double PersuasionProbability = 0.9d;
@@ -26,7 +26,7 @@ namespace ArtificialBeeColony.Core
             AdjacentSourceGenerator = adjacentSourceGenerator;
         }
 
-        public T Solve(bool logResults = false)
+        public T Solve(bool sortAscending = true, bool logResults = false)
         {
             T[] nectarSources = new T[NectarSourcesCount];
 
@@ -34,6 +34,8 @@ namespace ArtificialBeeColony.Core
             {
                 nectarSources[i] = InitialSourceGenerator(Seed);
             }
+
+            Array.Sort(nectarSources);
 
             int maxPossibleScoutsCount = Math.Min(ScoutBeesCount, NectarSourcesCount);
             
@@ -61,11 +63,11 @@ namespace ArtificialBeeColony.Core
                     }
                 }
 
-                bestSource = (from nectarSource in nectarSources
-                    orderby nectarSource
-                    select nectarSource).First();
+                Array.Sort(nectarSources);
 
-                if (logResults && (i % 5 == 0 || i == 1))
+                bestSource = nectarSources[0];
+
+                if (logResults && (i % 100 == 0 || i == 1))
                 {
                     Console.WriteLine($"Iteration: {i, -3} {bestSource}");
                 }
@@ -93,7 +95,7 @@ namespace ArtificialBeeColony.Core
 
             void DoWaggleDance()
             {
-                double nectarSum = scoutBees.Sum(s => s.NectarSource.TotalCost);
+                double nectarSum = scoutBees.Sum(s => sortAscending ? s.NectarSource.TotalCost : 1d / s.NectarSource.TotalCost);
 
                 for(int i = 0; i < ActiveBeesCount; i++)
                 {
@@ -102,7 +104,7 @@ namespace ArtificialBeeColony.Core
                     
                     foreach(ScoutBee<T> scout in scoutBees)
                     {
-                        double currentNectar = scout.NectarSource.TotalCost;
+                        double currentNectar = sortAscending ? scout.NectarSource.TotalCost : 1d / scout.NectarSource.TotalCost;
                         currentNectarSum += currentNectar;
 
                         if (randomNectar < currentNectarSum)
