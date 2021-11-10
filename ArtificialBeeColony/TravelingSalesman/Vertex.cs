@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ArtificialBeeColony
+namespace TravelingSalesman
 {
     public class Vertex : IEquatable<Vertex>
     {
