@@ -41,7 +41,7 @@ namespace TravelingSalesman
         {
             if (other is null) throw new ArgumentNullException();
 
-            if (other is not Route otherRoute) throw new InvalidCastException();
+            if (other is not Route) throw new InvalidCastException();
 
             return this.TotalCost < other.TotalCost;
         }
@@ -50,7 +50,7 @@ namespace TravelingSalesman
         {
             if (other is null) throw new ArgumentNullException();
 
-            if (other is not Route otherRoute) throw new InvalidCastException();
+            if (other is not Route) throw new InvalidCastException();
 
             return (int)(this.TotalCost - other.TotalCost);
         }

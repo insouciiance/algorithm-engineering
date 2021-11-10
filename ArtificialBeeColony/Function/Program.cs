@@ -1,6 +1,7 @@
 using ArtificialBeeColony.Core;
+using FunctionOptimization.Services;
 
-namespace Function
+namespace FunctionOptimization
 {
     public class Program
     {

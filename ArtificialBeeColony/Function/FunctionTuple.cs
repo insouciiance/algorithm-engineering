@@ -1,13 +1,15 @@
 using System;
 using ArtificialBeeColony;
 
-namespace Function
+using static System.Math;
+
+namespace FunctionOptimization
 {
     public class FunctionTuple : IOptimizable
     {
         public double X { get; }
         public double Y { get; }
-        public double TotalCost => Math.Abs(Math.Sin(X) + Math.Sin(Y)) / (Math.Abs(X) + Math.Abs(Y) + 1) * 10;
+        public double TotalCost => Sqrt(X * X + Y * Y) + 3 * Cos(Sqrt(X * X + Y * Y));
 
         public FunctionTuple(double x, double y) => (X, Y) = (x, y);
      
@@ -15,18 +17,18 @@ namespace Function
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            if (other is not FunctionTuple otherTuple) throw new InvalidCastException();
+            if (other is not FunctionTuple) throw new InvalidCastException();
 
-            return this.TotalCost > otherTuple.TotalCost;
+            return this.TotalCost > other.TotalCost;
         }
 
         public int CompareTo(IOptimizable other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            if (other is not FunctionTuple otherTuple) throw new InvalidCastException();
+            if (other is not FunctionTuple) throw new InvalidCastException();
 
-            return (int)(otherTuple.TotalCost - this.TotalCost);
+            return (int)(other.TotalCost - this.TotalCost);
         }
 
         public override string ToString()

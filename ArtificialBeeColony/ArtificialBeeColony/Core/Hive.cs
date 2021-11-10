@@ -9,8 +9,8 @@ namespace ArtificialBeeColony.Core
 
         public const int ScoutBeesCount = 5;
         public const int ActiveBeesCount = 50;
-        public const int NectarSourcesCount = 500;
-        public const int IterationsCount = 10000;
+        public const int NectarSourcesCount = 15;
+        public const int IterationsCount = 1000;
         public const double MistakeProbability = 0.05d;
         public const double PersuasionProbability = 0.9d;
 
@@ -26,7 +26,7 @@ namespace ArtificialBeeColony.Core
             AdjacentSourceGenerator = adjacentSourceGenerator;
         }
 
-        public T Solve(bool sortAscending = true, bool logResults = false)
+        public T Solve(bool logResults = false)
         {
             T[] nectarSources = new T[NectarSourcesCount];
 
@@ -95,6 +95,17 @@ namespace ArtificialBeeColony.Core
 
             void DoWaggleDance()
             {
+                bool sortAscending = false;
+
+                for (int i = 0; i < nectarSources.Length - 1; i++)
+                {
+                    if (nectarSources[i].TotalCost < nectarSources[i + 1].TotalCost)
+                    {
+                        sortAscending = true;
+                        break;
+                    }
+                }
+
                 double nectarSum = scoutBees.Sum(s => sortAscending ? s.NectarSource.TotalCost : 1d / s.NectarSource.TotalCost);
 
                 for(int i = 0; i < ActiveBeesCount; i++)
