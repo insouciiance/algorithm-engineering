@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using ArtificialBeeColony;
 using ArtificialBeeColony.Core;
-using TravelingSalesman;
 using TravelingSalesman.Services;
 
-namespace TravelingSalesmanTest
+namespace TravelingSalesman
 {
     class Program
     {

@@ -67,9 +67,10 @@ namespace ArtificialBeeColony.Core
 
                 bestSource = nectarSources[0];
 
-                if (logResults && (i % 100 == 0 || i == 1))
+                if (logResults && (i % 40 == 0 || i == 1))
                 {
-                    Console.WriteLine($"Iteration: {i, -3} {bestSource}");
+                    Console.WriteLine($"Iteration: {i}");
+                    Console.WriteLine(bestSource);
                 }
             }
 
