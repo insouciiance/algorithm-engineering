@@ -9,7 +9,7 @@ namespace FunctionOptimization
     {
         public double X { get; }
         public double Y { get; }
-        public double TotalCost => Sqrt(X * X + Y * Y) + 3 * Cos(Sqrt(X * X + Y * Y));
+        public double TotalCost => Abs(Cos(Sqrt((X * X + Y * Y))) / (Sqrt(X * X + Y * Y) + 1)) * 10;
 
         public FunctionTuple(double x, double y) => (X, Y) = (x, y);
      
@@ -28,12 +28,12 @@ namespace FunctionOptimization
 
             if (other is not FunctionTuple) throw new InvalidCastException();
 
-            return (int)(other.TotalCost - this.TotalCost);
+            return (other.TotalCost - this.TotalCost) >= 0 ? 1 : -1;
         }
 
         public override string ToString()
         {
-            return $"x=={Math.Round(X, 2)} y=={Math.Round(X, 2)} f={Math.Round(TotalCost, 2)}";
+            return $"x=={Math.Round(X, 2)} y=={Math.Round(Y, 2)} f={Math.Round(TotalCost, 2)}";
         }
     }
 }
