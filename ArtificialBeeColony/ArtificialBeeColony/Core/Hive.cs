@@ -9,7 +9,7 @@ namespace ArtificialBeeColony.Core
 
         public const int ScoutBeesCount = 5;
         public const int ActiveBeesCount = 50;
-        public const int NectarSourcesCount = 15;
+        public const int NectarSourcesCount = 10;
         public const int IterationsCount = 1000;
         public const double MistakeProbability = 0.05d;
         public const double PersuasionProbability = 0.9d;

@@ -24,6 +24,7 @@ namespace VertexCover.Services
                 sources.Add(graph.Vertices[randomVertexIndex]);
             }
 
+            System.Console.WriteLine(graph);
             return new VertexCover(sources);
 
             bool EnoughVerticesToCover()
@@ -54,13 +55,7 @@ namespace VertexCover.Services
 
         public static VertexCover GenerateAdjacentCover(Graph graph, VertexCover current)
         {
-            int vertexToDeleteIndex = Random.Next(0, current.Vertices.Length);
-            int vertexToAddIndex = Random.Next(0, graph.VerticesCount);
-
-            List<Vertex> newVertices = new();
-
-            newVertices.AddRange(current.Vertices.Where(v => v.Index != vertexToDeleteIndex));
-            newVertices.Add(graph.Vertices.First(v => v.Index == vertexToAddIndex));
+            List<Vertex> newVertices = new(current.Vertices);
 
             OptimizeVertexCover();
 
@@ -68,26 +63,15 @@ namespace VertexCover.Services
 
             void OptimizeVertexCover()
             {
-                bool optimized;
+                int randomVertexIndex = Random.Next(0, current.Vertices.Length);
+                Vertex currentVertex = newVertices[randomVertexIndex];
 
-                do {
-                    optimized = false;
+                newVertices.Remove(currentVertex);
 
-                    for(int i = 0; i < newVertices.Count; i++)
-                    {
-                        Vertex currentVertex = newVertices[i];
-
-                        newVertices.Remove(currentVertex);
-
-                        if (!EnoughVerticesToCover())
-                        {
-                            newVertices.Add(currentVertex);
-                            continue;
-                        }
-
-                        optimized = true;
-                    }
-                }while(optimized);
+                if (!EnoughVerticesToCover())
+                {
+                    newVertices.Add(currentVertex);
+                }
             }
 
             bool EnoughVerticesToCover()
