@@ -11,9 +11,12 @@ namespace VertexCover
 
         public int VerticesCount => Vertices.Count;
 
-        public Graph(IEnumerable<Vertex> vertices)
+        public int EdgesCount { get; }
+
+        public Graph(IEnumerable<Vertex> vertices, int edgesCount)
         {
             Vertices = vertices?.ToList() ?? throw new ArgumentNullException(nameof(vertices));
+            EdgesCount = edgesCount;
         }
 
         public override string ToString()

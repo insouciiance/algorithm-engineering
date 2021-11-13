@@ -7,7 +7,7 @@ namespace VertexCover
     {
         public static void Main()
         {
-            Graph graph = GraphGenerator.Generate(150, 1, 5);
+            Graph graph = GraphGenerator.Generate(300, 2, 30);
 
             Hive<VertexCover, Graph> hive = new(
                 graph, 

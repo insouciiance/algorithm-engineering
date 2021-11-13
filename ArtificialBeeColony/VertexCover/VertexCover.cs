@@ -12,12 +12,12 @@ namespace VertexCover
 
         public Vertex[] Vertices { get; }
 
+        public double TotalCost => Vertices.Length;
+
         public VertexCover(IEnumerable<Vertex> vertices)
         {
             Vertices = vertices.ToArray();
         }
-
-        public double TotalCost => Vertices.Length;
 
         public bool BetterThan(IOptimizable other)
         {

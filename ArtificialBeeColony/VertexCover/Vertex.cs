@@ -9,14 +9,14 @@ namespace VertexCover
     {
         public int Index { get; }
 
-        public List<Vertex> AdjacentVertices { get; }
+        public List<Edge> AdjacentEdges { get; }
 
-        public int Degree => AdjacentVertices.Count;
+        public int Degree => AdjacentEdges.Count;
 
-        public Vertex(int index, List<Vertex> adjacentVertices = null)
+        public Vertex(int index, List<Edge> adjacentEdges = null)
         {
             Index = index;
-            AdjacentVertices = adjacentVertices ?? new List<Vertex>();
+            AdjacentEdges = adjacentEdges ?? new List<Edge>();
         }
 
         public bool Equals(Vertex other)
@@ -32,9 +32,9 @@ namespace VertexCover
 
             sb.AppendLine("Adjacent vertices:");
 
-            foreach(Vertex vertex in AdjacentVertices)
+            foreach(Edge edge in AdjacentEdges)
             {
-                sb.AppendLine($"[{vertex.Index}]");
+                sb.AppendLine($"[{edge.GetAdjacentVertex(this)}]");
             } 
 
             return sb.ToString();

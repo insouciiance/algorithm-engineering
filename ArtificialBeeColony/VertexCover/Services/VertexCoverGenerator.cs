@@ -28,27 +28,20 @@ namespace VertexCover.Services
 
             bool EnoughVerticesToCover()
             {
-                int verticesCount = graph.VerticesCount;
-
-                List<Vertex> coveredVertices = new();
+                List<Edge> coveredEdges = new();
 
                 foreach(Vertex vertex in sources)
                 {
-                    if (!coveredVertices.Contains(vertex))
+                    foreach(Edge edge in vertex.AdjacentEdges)
                     {
-                        coveredVertices.Add(vertex);
-                    }
-
-                    foreach(Vertex adjacentVertex in vertex.AdjacentVertices)
-                    {
-                        if (!coveredVertices.Contains(adjacentVertex))
+                        if (!coveredEdges.Contains(edge))
                         {
-                            coveredVertices.Add(adjacentVertex);
+                            coveredEdges.Add(edge);
                         }
                     }
                 }
 
-                return verticesCount == coveredVertices.Count;
+                return graph.EdgesCount == coveredEdges.Count;
             }
         }
 
@@ -68,51 +61,33 @@ namespace VertexCover.Services
 
             void OptimizeVertexCover()
             {
-                bool optimized;
+                int randomVertexIndex = Random.Next(0, newVertices.Count);
+                Vertex currentVertex = newVertices[randomVertexIndex];
 
-                do {
-                    optimized = false;
+                newVertices.Remove(currentVertex);
 
-                    for(int i = 0; i < newVertices.Count; i++)
-                    {
-                        Vertex currentVertex = newVertices[i];
-
-                        newVertices.Remove(currentVertex);
-
-                        if (!EnoughVerticesToCover())
-                        {
-                            newVertices.Add(currentVertex);
-                            continue;
-                        }
-
-                        optimized = true;
-                    }
-                }while(optimized);
+                if (!EnoughVerticesToCover())
+                {
+                    newVertices.Add(currentVertex);
+                }
             }
 
             bool EnoughVerticesToCover()
             {
-                int verticesCount = graph.VerticesCount;
-
-                List<Vertex> coveredVertices = new();
+                List<Edge> coveredEdges = new();
 
                 foreach(Vertex vertex in newVertices)
                 {
-                    if (!coveredVertices.Contains(vertex))
+                    foreach(Edge edge in vertex.AdjacentEdges)
                     {
-                        coveredVertices.Add(vertex);
-                    }
-
-                    foreach(Vertex adjacentVertex in vertex.AdjacentVertices)
-                    {
-                        if (!coveredVertices.Contains(adjacentVertex))
+                        if (!coveredEdges.Contains(edge))
                         {
-                            coveredVertices.Add(adjacentVertex);
+                            coveredEdges.Add(edge);
                         }
                     }
                 }
-                
-                return verticesCount == coveredVertices.Count;
+
+                return graph.EdgesCount == coveredEdges.Count;
             }
         }
     }

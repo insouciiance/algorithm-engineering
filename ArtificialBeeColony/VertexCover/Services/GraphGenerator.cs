@@ -14,10 +14,12 @@ namespace VertexCover.Services
         public static Graph Generate(int verticesCount, int minDegree, int maxDegree)
         {
             List<Vertex> vertices = new();
+            int edgesCount = 0;
 
             do
             {
                 vertices.Clear();
+                edgesCount = 0;
 
                 for (int i = 0; i < verticesCount; i++)
                 {
@@ -42,16 +44,19 @@ namespace VertexCover.Services
                             int randomAdjacentVertexIndex = Random.Next(0, verticesCount);
                             adjacentVertex = vertices[randomAdjacentVertexIndex];
                         } while (currentVertex.Equals(adjacentVertex) 
-                                 || currentVertex.AdjacentVertices.Contains(adjacentVertex) 
+                                 || currentVertex.AdjacentEdges.Any(e => e.GetAdjacentVertex(currentVertex).Equals(adjacentVertex)) 
                                  || adjacentVertex.Degree >= maxDegree);
 
-                        currentVertex.AdjacentVertices.Add(adjacentVertex);
-                        adjacentVertex.AdjacentVertices.Add(currentVertex);
+                        Edge e = new Edge(currentVertex, adjacentVertex);
+                        edgesCount++;
+
+                        currentVertex.AdjacentEdges.Add(e);
+                        adjacentVertex.AdjacentEdges.Add(e);
                     }
                 }
             } while (vertices.Any(v => v.Degree < minDegree || v.Degree > maxDegree));
 
-            return new Graph(vertices);
+            return new Graph(vertices, edgesCount);
         }
     }
 }
