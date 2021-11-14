@@ -8,7 +8,9 @@ namespace TravelingSalesman
 {
     public class Route : IOptimizable
     {
-        public Vertex[] Vertices { get; }
+        Graph Graph { get; }
+
+        public int[] Vertices { get; }
 
         public double TotalCost
         {
@@ -18,22 +20,23 @@ namespace TravelingSalesman
 
                 for(int i = 0; i < Vertices.Length - 1; i++)
                 {
-                    Vertex currentVertex = Vertices[i];
-                    Vertex nextVertex = Vertices[i + 1];
+                    int currentVertex = Vertices[i];
+                    int nextVertex = Vertices[i + 1];
 
-                    Edge currentEdge = currentVertex.GetAdjacentEdge(nextVertex);
+                    int currentWeight = Graph.AdjacencyMatrix[currentVertex, nextVertex];
 
-                    totalCost += currentEdge.Weight;
+                    totalCost += currentWeight;
                 }
 
-                totalCost += Vertices[^1].GetAdjacentEdge(Vertices[0]).Weight;
+                totalCost += Graph.AdjacencyMatrix[Vertices[^1], Vertices[0]];
 
                 return totalCost;
             }
         }
 
-        public Route(IEnumerable<Vertex> vertices)
+        public Route(Graph graph, IEnumerable<int> vertices)
         {
+            Graph = graph;
             Vertices = vertices?.ToArray() ?? throw new ArgumentNullException(nameof(vertices));
         }
 
@@ -61,9 +64,9 @@ namespace TravelingSalesman
 
             sb.Append("Route: ");
 
-            foreach(Vertex vertex in Vertices)
+            foreach(int vertex in Vertices)
             {
-                sb.Append($"{vertex.Index} ");
+                sb.Append($"{vertex} ");
             }
 
             sb.AppendLine($"\nTotalCost: {TotalCost}");

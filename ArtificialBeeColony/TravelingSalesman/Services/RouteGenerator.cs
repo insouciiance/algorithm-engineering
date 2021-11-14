@@ -9,51 +9,41 @@ namespace TravelingSalesman.Services
 
         public static Route GenerateRandomRoute(Graph graph)
         {
-            if (graph is null)
+            int[] vertices = new int[graph.VerticesCount];
+
+            for(int i = 0; i < graph.VerticesCount; i++)
             {
-                throw new ArgumentNullException(nameof(graph));
+                vertices[i] = i;
             }
 
-            Vertex[] vertices = new Vertex[graph.VerticesCount];
-
-            graph.Vertices.CopyTo(vertices);
-
-            for(int i = 1; i < graph.VerticesCount; i++)
+            for(int i = 0; i < graph.VerticesCount; i++)
             {
-                int randomIndex = Random.Next(1, graph.VerticesCount);
-
-                Vertex temp = vertices[i];
-                vertices[i] = vertices[randomIndex];
-                vertices[randomIndex] = temp;
+                int randomVertexIndex = Random.Next(0, vertices.Length);
+                int temp = vertices[randomVertexIndex];
+                vertices[randomVertexIndex] = vertices[i];
+                vertices[i] = temp;
             }
 
-            return new Route(vertices);
+            return new Route(graph, vertices);
         }
 
-        public static Route GenerateAdjacentRoute(Graph _, Route route)
+        public static Route GenerateAdjacentRoute(Graph graph, Route route)
         {
-            if (route.Vertices.Length < 3)
+            int[] vertices = new int[graph.VerticesCount];
+
+            for(int i = 0; i < graph.VerticesCount; i++)
             {
-                return route;
+                vertices[i] = route.Vertices[i];
             }
 
-            Vertex[] vertices = new Vertex[route.Vertices.Length];
+            int firstRandomIndex = Random.Next(0, graph.VerticesCount);
+            int secondRandomIndex = Random.Next(0, graph.VerticesCount);
 
-            route.Vertices.CopyTo(vertices, 0);
+            int temp = vertices[firstRandomIndex];
+            vertices[firstRandomIndex] = vertices[secondRandomIndex];
+            vertices[secondRandomIndex] = temp;
 
-            int firstSwapIndex = Random.Next(0, vertices.Length);
-
-            int secondSwapIndex;
-            do
-            {
-                secondSwapIndex = Random.Next(0, vertices.Length);
-            } while (firstSwapIndex == secondSwapIndex);
-
-            Vertex temp = vertices[firstSwapIndex];
-            vertices[firstSwapIndex] = vertices[secondSwapIndex];
-            vertices[secondSwapIndex] = temp;
-
-            return new Route(vertices);
+            return new Route(graph, vertices);
         }
     }
 }

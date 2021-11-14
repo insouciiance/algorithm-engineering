@@ -7,13 +7,13 @@ namespace TravelingSalesman
 {
     public class Graph
     {
-        public List<Vertex> Vertices { get; }
+        public int[,] AdjacencyMatrix { get; }
 
-        public int VerticesCount => Vertices.Count;
+        public int VerticesCount => AdjacencyMatrix.GetLength(0);
 
-        public Graph(IEnumerable<Vertex> vertices)
+        public Graph(int[,] adjacencyMatrix)
         {
-            Vertices = vertices?.ToList() ?? throw new ArgumentNullException(nameof(vertices));
+            AdjacencyMatrix = adjacencyMatrix;
         }
 
         public override string ToString()
@@ -21,11 +21,6 @@ namespace TravelingSalesman
             StringBuilder sb = new();
             
             sb.AppendLine($"Vertices count: {VerticesCount}");
-
-            foreach(Vertex vertex in Vertices)
-            {
-                sb.AppendLine(vertex.ToString());
-            }
 
             return sb.ToString();
         }
