@@ -1,3 +1,5 @@
+using System;
+
 namespace ArtificialBeeColony.Core
 {
     public abstract class Bee<T> where T : IOptimizable
