@@ -1,5 +1,5 @@
 using System;
-using ArtificialBeeColony;
+using System.Linq;
 
 namespace TravelingSalesman.Services
 {
@@ -22,6 +22,44 @@ namespace TravelingSalesman.Services
                 int temp = vertices[randomVertexIndex];
                 vertices[randomVertexIndex] = vertices[i];
                 vertices[i] = temp;
+            }
+
+            return new Route(graph, vertices);
+        }
+
+        public static Route GenerateGreedyRoute(Graph graph)
+        {
+            int[] vertices = new int[graph.VerticesCount];
+
+            for(int i = 0; i < graph.VerticesCount; i++)
+            {
+                vertices[i] = -1;
+            }
+
+            int currentIndex = Random.Next(0, graph.VerticesCount);
+
+            for(int i = 0; i < graph.VerticesCount; i++)
+            {
+                vertices[i] = currentIndex;
+
+                for(int j = 0; j < graph.VerticesCount; j++)
+                {
+                    if (!vertices.Any(v => v == j))
+                    {
+                        currentIndex = j;
+                        break;
+                    }
+                }
+
+                for(int j = 0; j < graph.VerticesCount; j++)
+                {
+                    if (i == j) continue;
+
+                    if (!vertices.Any(v => v == j) && graph.AdjacencyMatrix[vertices[i], j] < graph.AdjacencyMatrix[vertices[i], currentIndex])
+                    {
+                        currentIndex = j;
+                    }
+                }
             }
 
             return new Route(graph, vertices);

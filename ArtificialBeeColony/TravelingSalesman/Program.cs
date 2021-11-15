@@ -8,13 +8,11 @@ namespace TravelingSalesman
     {
         static void Main(string[] args)
         {
-            Graph graph = GraphGenerator.GenerateFullGraph(5, 1, 20);
-
-            Console.WriteLine(graph);
+            Graph graph = GraphGenerator.GenerateFullGraph(300, 5, 150);
 
             Hive<Route, Graph> hive = new(graph, RouteGenerator.GenerateRandomRoute, RouteGenerator.GenerateAdjacentRoute);
 
-            Console.WriteLine(hive.Solve(true));
+            hive.Solve(true);
         }
     }
 }
