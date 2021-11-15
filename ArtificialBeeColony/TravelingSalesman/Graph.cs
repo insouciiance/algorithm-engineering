@@ -22,6 +22,16 @@ namespace TravelingSalesman
             
             sb.AppendLine($"Vertices count: {VerticesCount}");
 
+            for(int i = 0; i < VerticesCount; i++)
+            {
+                for(int j = 0; j < VerticesCount; j++)
+                {
+                    sb.Append(AdjacencyMatrix[i, j] + " ");
+                }
+
+                sb.AppendLine();
+            }
+
             return sb.ToString();
         }
     }

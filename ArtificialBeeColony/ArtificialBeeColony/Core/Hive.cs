@@ -10,7 +10,7 @@ namespace ArtificialBeeColony.Core
         public const int ScoutBeesCount = 5;
         public const int ActiveBeesCount = 50;
         public const int NectarSourcesCount = 10;
-        public const int IterationsCount = 10000;
+        public const int IterationsCount = 1000;
         public const double MistakeProbability = 0.05d;
         public const double PersuasionProbability = 0.9d;
 
@@ -67,10 +67,10 @@ namespace ArtificialBeeColony.Core
 
                 bestSource = nectarSources[0];
 
-                if (logResults && (i % 5 == 0 || i == 1))
+                if (logResults && (i % 40 == 0 || i == 1))
                 {
                     Console.WriteLine($"Iteration: {i}");
-                    Console.WriteLine(bestSource.TotalCost);
+                    Console.WriteLine(bestSource);
                 }
             }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using ArtificialBeeColony;
 using ArtificialBeeColony.Core;
 using TravelingSalesman.Services;
 
@@ -10,11 +8,13 @@ namespace TravelingSalesman
     {
         static void Main(string[] args)
         {
-            Graph graph = GraphGenerator.GenerateFullGraph(300, 5, 150);
+            Graph graph = GraphGenerator.GenerateFullGraph(5, 1, 20);
+
+            Console.WriteLine(graph);
 
             Hive<Route, Graph> hive = new(graph, RouteGenerator.GenerateRandomRoute, RouteGenerator.GenerateAdjacentRoute);
 
-            hive.Solve(true);
+            Console.WriteLine(hive.Solve(true));
         }
     }
 }
