@@ -7,10 +7,10 @@ namespace ArtificialBeeColony.Core
     {
         private static readonly Random Random = new();
 
-        public const int ScoutBeesCount = 10;
-        public const int ActiveBeesCount = 100;
-        public const int NectarSourcesCount = 100;
-        public const int IterationsCount = 10000;
+        public const int ScoutBeesCount = 5;
+        public const int ActiveBeesCount = 50;
+        public const int NectarSourcesCount = 15;
+        public const int IterationsCount = 300;
         public const double MistakeProbability = 0.05d;
         public const double PersuasionProbability = 0.9d;
 
@@ -67,7 +67,7 @@ namespace ArtificialBeeColony.Core
 
                 bestSource = nectarSources[0];
 
-                if (logResults && (i % 100 == 0 || i == 1))
+                if (logResults && (i % 5 == 0 || i == 1))
                 {
                     Console.WriteLine($"Iteration: {i}");
                     Console.WriteLine(bestSource.TotalCost);
@@ -79,22 +79,19 @@ namespace ArtificialBeeColony.Core
             void RunScoutPhase()
             {
                 scoutBees = new ScoutBee<T>[maxPossibleScoutsCount];
-                Array.Sort(nectarSources);
 
-                for(int i = 0; i < maxPossibleScoutsCount - 1; i++)
+                for(int i = 0; i < maxPossibleScoutsCount; i++)
                 {
-                    scoutBees[i] = new ScoutBee<T>(nectarSources[i], i);
+                    T nectarSource;
+                    int randomSourceIndex;
+                    do
+                    {
+                        randomSourceIndex = Random.Next(0, NectarSourcesCount);
+                        nectarSource = nectarSources[randomSourceIndex];
+                    } while(scoutBees.Any(s => s is not null && nectarSource.Equals(s.NectarSource)));
+
+                    scoutBees[i] = new ScoutBee<T>(nectarSource, randomSourceIndex);
                 }
-
-                T nectarSource;
-                int randomSourceIndex;
-                do
-                {
-                    randomSourceIndex = Random.Next(0, NectarSourcesCount);
-                    nectarSource = nectarSources[randomSourceIndex];
-                } while(scoutBees.Any(s => s is not null && nectarSource.Equals(s.NectarSource)));
-
-                scoutBees[maxPossibleScoutsCount - 1] = new ScoutBee<T>(nectarSource, randomSourceIndex);
             }
 
             void DoWaggleDance()
