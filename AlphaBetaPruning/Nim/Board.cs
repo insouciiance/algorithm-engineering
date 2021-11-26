@@ -35,9 +35,10 @@ namespace Nim
         {
             StringBuilder sb = new();
 
-            foreach(Heap heap in Heaps)
+            for(int i = 0; i < HeapsCount; i++)
             {
-                sb.Append($"[{heap.ObjectsLeft} ({heap.ObjectsCount})] ");
+                sb.Append($"[{i}]: ");
+                sb.AppendLine($"{Heaps[i].ObjectsLeft} left");
             }
 
             return sb.ToString();

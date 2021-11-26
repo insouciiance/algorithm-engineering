@@ -5,22 +5,53 @@ namespace AlphaBetaPruning
 {
     public class GameTree<T> where T : IGame
     {
-        public T InitialState { get; }
+        public T CurrentState { get; set; }
 
         public Func<T, T[]> ChildStatesGenerator { get; }
 
-        public GameTree(T initialState, Func<T, T[]> childStatesGenerator)
+        public GameTree(T currrentState, Func<T, T[]> childStatesGenerator)
         {
-            InitialState = initialState;
+            CurrentState = currrentState;
             ChildStatesGenerator = childStatesGenerator;
         }
+
+        public bool HasChildStates() => ChildStatesGenerator.Invoke(CurrentState).Length > 0;
         
-        public int Run(int depth, bool maximizingPlayer)
+        public T FindBestMove(int depth, bool maximizingPlayer)
         {
-            return MiniMax(InitialState, depth, int.MinValue, int.MaxValue, maximizingPlayer);
+            T[] childStates = ChildStatesGenerator.Invoke(CurrentState);
+
+            if (childStates.Length == 0)
+            {
+                return default;
+            }
+
+            T bestMove = childStates[0];
+
+            foreach(T childState in childStates)
+            {
+                int miniMaxValue = MiniMax(childState, depth, !maximizingPlayer);
+
+                if (miniMaxValue > bestMove.StaticEvaluation(!maximizingPlayer) && maximizingPlayer)
+                {
+                    bestMove = childState;
+                }
+
+                if (miniMaxValue < bestMove.StaticEvaluation(!maximizingPlayer) && !maximizingPlayer)
+                {
+                    bestMove = childState;
+                }
+            }
+
+            return bestMove;
         }
 
-        private int MiniMax(T state, int depth, int alpha, int beta, bool maximizingPlayer)
+        public int Run(int depth, bool maximizingPlayer)
+        {
+            return MiniMax(CurrentState, depth, maximizingPlayer);
+        }
+
+        private int MiniMax(T state, int depth, bool maximizingPlayer, int alpha = int.MinValue, int beta = int.MaxValue)
         {
             T[] childStates = ChildStatesGenerator.Invoke(state);
 
@@ -32,7 +63,7 @@ namespace AlphaBetaPruning
             int miniMaxValue = maximizingPlayer ? int.MinValue : int.MaxValue;
             foreach(T childState in childStates)
             {
-                int childMiniMax = MiniMax(childState, depth - 1, alpha, beta, !maximizingPlayer);
+                int childMiniMax = MiniMax(childState, depth - 1, !maximizingPlayer, alpha, beta);
                 if (maximizingPlayer)
                 {
                     miniMaxValue = Math.Max(miniMaxValue, childMiniMax);
@@ -64,12 +95,12 @@ namespace AlphaBetaPruning
             
             int indentationSize = 0;
 
-            AppendString(InitialState, true);
+            AppendString(CurrentState, true);
 
             void AppendString(T currentState, bool maximizingPlayer)
             {
                 Console.ForegroundColor = (ConsoleColor)indentationSize;
-                Console.WriteLine(new string(' ', indentationSize * 2) + $"{currentState}(ev. {MiniMax(currentState, 1000, int.MinValue, int.MaxValue, maximizingPlayer)}[{maximizingPlayer}])");
+                Console.WriteLine(new string(' ', indentationSize * 2) + $"{currentState}(ev. {MiniMax(currentState, 1000, maximizingPlayer)}[{maximizingPlayer}])");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 indentationSize++;
 
