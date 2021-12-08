@@ -25,15 +25,15 @@ namespace Nim
 
             if (maximizingPlayer)
             {
-                return eval <= 0 ? 0 : 1;
+                return eval == 0 ? 0 : 1;
             }
 
-            return eval <= 0 ? 1 : 0;
+            return eval == 0 ? 1 : 0;
         }
 
         public override string ToString()
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new StringBuilder();
 
             for(int i = 0; i < HeapsCount; i++)
             {

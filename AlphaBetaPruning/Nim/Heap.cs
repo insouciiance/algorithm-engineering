@@ -2,7 +2,7 @@ namespace Nim
 {
     public struct Heap
     {
-        public int ObjectsCount { get; }
+        public int ObjectsCount { get; set; }
         public int ObjectsLeft { get; set; }
 
         public Heap(int objectsCount)

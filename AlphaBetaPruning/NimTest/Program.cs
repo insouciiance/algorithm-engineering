@@ -9,12 +9,11 @@ namespace NimTest
     {
         static void Main(string[] args)
         {
-            Board board = new(1, 2, 3, 4);
-            GameTree<Board> tree = new(board, BoardGenerator.GenerateChildBoards);
-
+            Board board = new Board(0, 2, 3, 0);
+            GameTree<Board> tree = new GameTree<Board>(board, BoardGenerator.GenerateChildBoards);
             System.Console.WriteLine(board);
 
-            NimAI nimAi = new(board);
+            NimAI nimAi = new NimAI(board);
 
             while(!nimAi.IsGameFinished())
             {
@@ -23,7 +22,7 @@ namespace NimTest
                 System.Console.WriteLine("Enter a number of objects to remove:");
                 int objectsToTake = int.Parse(Console.ReadLine());
 
-                MoveInput input = new(heapId, objectsToTake);
+                MoveInput input = new MoveInput(heapId, objectsToTake);
 
                 Board playersBoardResult = nimAi.TakePlayersMove(input);
 

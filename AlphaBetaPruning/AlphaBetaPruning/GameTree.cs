@@ -9,15 +9,15 @@ namespace AlphaBetaPruning
 
         public Func<T, T[]> ChildStatesGenerator { get; }
 
-        public GameTree(T currrentState, Func<T, T[]> childStatesGenerator)
+        public GameTree(T currentState, Func<T, T[]> childStatesGenerator)
         {
-            CurrentState = currrentState;
+            CurrentState = currentState;
             ChildStatesGenerator = childStatesGenerator;
         }
 
         public bool HasChildStates() => ChildStatesGenerator.Invoke(CurrentState).Length > 0;
         
-        public T FindBestMove(int depth, bool maximizingPlayer)
+        public T FindBestMove(int depth)
         {
             T[] childStates = ChildStatesGenerator.Invoke(CurrentState);
 
@@ -30,14 +30,9 @@ namespace AlphaBetaPruning
 
             foreach(T childState in childStates)
             {
-                int miniMaxValue = MiniMax(childState, depth, !maximizingPlayer);
+                int miniMaxValue = MiniMax(childState, depth, false);
 
-                if (miniMaxValue > bestMove.StaticEvaluation(!maximizingPlayer) && maximizingPlayer)
-                {
-                    bestMove = childState;
-                }
-
-                if (miniMaxValue < bestMove.StaticEvaluation(!maximizingPlayer) && !maximizingPlayer)
+                if (miniMaxValue > bestMove.StaticEvaluation(false))
                 {
                     bestMove = childState;
                 }
@@ -89,7 +84,7 @@ namespace AlphaBetaPruning
 
         public void Print()
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new StringBuilder();
 
             System.Console.WriteLine("Game Tree");
             

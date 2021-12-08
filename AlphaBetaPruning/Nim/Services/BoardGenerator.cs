@@ -7,7 +7,7 @@ namespace Nim.Services
     {
         public static Board[] GenerateChildBoards(Board currentBoard)
         {
-            List<Board> childBoards = new();
+            List<Board> childBoards = new List<Board>();
 
             for(int i = 0; i < currentBoard.HeapsCount; i++)
             {                

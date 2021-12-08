@@ -4,7 +4,7 @@ namespace Nim.Services
 {
     public class NimAI
     {
-        private GameTree<Board> _currentTree;
+        private readonly GameTree<Board> _currentTree;
 
         public NimAI(Board initialBoard)
         {
@@ -20,9 +20,9 @@ namespace Nim.Services
             return currentBoard;
         }
 
-        public Board TakeAIMove(bool maximizingPlayer = false)
+        public Board TakeAIMove(Difficulty difficulty = Difficulty.Normal)
         {
-            Board bestMove = _currentTree.FindBestMove(100, maximizingPlayer);
+            Board bestMove = _currentTree.FindBestMove((int)difficulty);
             _currentTree.CurrentState = bestMove;
             return bestMove;
         }
