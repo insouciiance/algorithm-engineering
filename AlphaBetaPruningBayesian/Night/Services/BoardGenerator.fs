@@ -44,7 +44,7 @@ module public BoardGenerator =
 
             for i = 0 to 3 do
                 for j = 1 to 7 do
-                    boardArray.[i, j] <- cardsArray.[i * 7 + j]
+                    boardArray.[i, j] <- cardsArray.[i * 7 + j - 1]
 
             let playerHand = 
                 last 4 cardsArray
@@ -106,4 +106,17 @@ module public BoardGenerator =
                                         childBoard.OpponentHand
                                         |> Array.filter(fun c -> not ((c :> IEquatable<Card>).Equals card))
                                 childBoards <- [yield! childBoards; childBoard]
-            Array.ofList childBoards
+            if childBoards.Length > 0 then
+                Array.ofList childBoards
+            else
+                for i in [0..board.Rows - 1] do
+                    for j in [1..board.Cols - 2] do
+                        let childBoard = (board :> ICloneable).Clone() :?> Board
+                        let cardToTake = childBoard.Board.[i, j]
+                        if not cardToTake.Open then
+                            childBoard.Board.[i, j] <- null
+                            childBoard.OpponentHand <- 
+                                childBoard.OpponentHand
+                                |> Array.append [| cardToTake |]
+                            childBoards <- [yield! childBoards; childBoard]
+                Array.ofList childBoards
