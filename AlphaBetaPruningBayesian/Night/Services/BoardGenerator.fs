@@ -46,6 +46,9 @@ module public BoardGenerator =
 
             Board(boardArray, playerHand, aiHand)
 
+        static member GenerateChildren(board : Board) = 
+            null
+
 
             
 

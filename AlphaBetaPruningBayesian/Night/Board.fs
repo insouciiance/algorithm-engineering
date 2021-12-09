@@ -2,7 +2,7 @@
 
 open System.Text
 open AlphaBetaPruningBayesian
-open AdjacentIndexesGenerator
+open IndexesGenerator
 
 type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card[]) =
     let mutable Board = boardMatrix

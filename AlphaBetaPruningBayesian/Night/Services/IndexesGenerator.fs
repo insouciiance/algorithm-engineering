@@ -1,4 +1,4 @@
-﻿module AdjacentIndexesGenerator
+﻿module IndexesGenerator
 
 let getAdjacentIndexes x y rows cols =
     let mutable adjacentIndexes = List.empty
