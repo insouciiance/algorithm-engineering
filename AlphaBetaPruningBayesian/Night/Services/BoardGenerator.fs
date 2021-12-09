@@ -21,8 +21,8 @@ module public BoardGenerator =
         |> Seq.skip (Seq.length xs - n)
 
     type public BoardGenerator() = 
-        static member Generate(rows:int, cols:int) =
-            let mutable boardArray = Array2D.create<Card> rows cols null
+        static member Generate() =
+            let mutable boardArray = Array2D.create<Card> 4 9 null
             let mutable cardsArray = Array.create<Card> 36 null
             
             for i = 0 to 8 do
@@ -31,9 +31,9 @@ module public BoardGenerator =
             
             cardsArray <- shuffle cardsArray
 
-            for i = 0 to rows - 1 do
-                for j = 0 to cols - 1 do
-                    boardArray.[i, j] <- cardsArray.[i * cols + j]
+            for i = 0 to 3 do
+                for j = 1 to 7 do
+                    boardArray.[i, j] <- cardsArray.[i * 7 + j]
 
             let playerHand = 
                 last 4 cardsArray

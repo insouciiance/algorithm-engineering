@@ -13,4 +13,10 @@ type public Card(nominal : CardNominal, suit : CardSuit) =
             this.Nominal = other.Nominal && this.Suit = other.Suit
 
     override this.ToString() =
-        this.Nominal.ToString() + " of " + this.Suit.ToString()
+        ((int this.Nominal) + 6).ToString() +
+            match this.Suit with
+                | CardSuit.Clubs -> "♣"
+                | CardSuit.Diamonds -> "♦"
+                | CardSuit.Hearts -> "♥"
+                | CardSuit.Spades -> "♠"
+                | _ -> "?"
