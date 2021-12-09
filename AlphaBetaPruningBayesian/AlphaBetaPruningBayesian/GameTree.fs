@@ -23,9 +23,9 @@ type public GameTree<'T when 'T :> IGame>(initialState : 'T, childStatesGenerato
             let mutable bestMove = childStates.[0]
 
             for childState in childStates do
-                let miniMaxValue = this.MiniMax(childState, depth, false, Int32.MinValue, Int32.MaxValue)
+                let miniMaxValue = this.MiniMax(childState, depth - 1, true, Int32.MinValue, Int32.MaxValue)
 
-                if miniMaxValue > bestMove.StaticEvaluation false then
+                if miniMaxValue > bestMove.StaticEvaluation true then
                     bestMove <- childState
 
             bestMove

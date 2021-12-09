@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="MoveInput.fs" />
     <Compile Include="CardSuit.fs" />
     <Compile Include="CardNominal.fs" />
     <Compile Include="Card.fs" />
     <Compile Include="Services\IndexesGenerator.fs" />
     <Compile Include="Board.fs" />
     <Compile Include="Services\BoardGenerator.fs" />
+    <Compile Include="Services\NightAI.fs" />
   </ItemGroup>
 
   <ItemGroup>

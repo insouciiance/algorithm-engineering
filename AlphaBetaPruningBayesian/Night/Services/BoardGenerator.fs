@@ -1,6 +1,8 @@
-﻿namespace Night
+﻿namespace Night.Services
 
 open System
+open Night
+open IndexesGenerator
 
 module public BoardGenerator = 
     let rng = new Random()
@@ -20,16 +22,25 @@ module public BoardGenerator =
         xs 
         |> Seq.skip (Seq.length xs - n)
 
+    let getAllCards() = 
+        let mutable cardsArray = Array.create<Card> 36 null
+            
+        for i = 0 to 8 do
+            for j = 0 to 3 do
+                cardsArray.[i * 4 + j] <- Card(enum i, enum j)
+        cardsArray
+
+    let rec comb n l = 
+        match n, l with
+        | 0, _ -> [[]]
+        | _, [] -> []
+        | k, (x::xs) -> List.map ((@) [x]) (comb (k - 1) xs) @ comb k xs
+
     type public BoardGenerator() = 
         static member Generate() =
             let mutable boardArray = Array2D.create<Card> 4 9 null
-            let mutable cardsArray = Array.create<Card> 36 null
-            
-            for i = 0 to 8 do
-                for j = 0 to 3 do
-                    cardsArray.[i * 4 + j] <- Card(enum i, enum j)
-            
-            cardsArray <- shuffle cardsArray
+
+            let cardsArray = shuffle (getAllCards())
 
             for i = 0 to 3 do
                 for j = 1 to 7 do
@@ -46,10 +57,53 @@ module public BoardGenerator =
 
             Board(boardArray, playerHand, aiHand)
 
-        static member GenerateChildren(board : Board) = 
-            null
+        static member GenerateHandPredictions(board : Board) = 
+            let possiblePlayerCards = 
+                board.Board
+                |> Seq.cast<Card>
+                |> Seq.filter(fun c -> c <> null)
+                |> Seq.filter(fun c -> not c.Open)
+                |> Seq.append board.PlayerHand
+                |> List.ofSeq
+            let possiblePlayerHands = 
+                comb 4 possiblePlayerCards
+                |> Array.ofList
+                |> Array.map (fun hand -> Array.ofList hand)
+                |> Array.map (fun hand -> Board(board.Board, hand, board.OpponentHand))
+            possiblePlayerHands
 
+        static member GenerateChildBoards(board: Board) = 
+            let mutable childBoards = []
+            let mutable possibleIndexes = []
+            for i in [0..board.Rows - 1] do
+                for j in [0..board.Cols - 1] do
+                    if board.Board.[i, j] <> null && board.Board.[i, j].Open then
+                        let adjacentIndexes = getAdjacentIndexes i j board.Rows board.Cols
+                        possibleIndexes <- List.distinct (possibleIndexes @ (adjacentIndexes |> List.ofArray))
 
-            
-
-
+            if possibleIndexes.Length = 0 then
+                for i in [0..board.Rows - 1] do
+                    for j in [0..board.Cols - 1] do
+                        possibleIndexes <- possibleIndexes @ [(i, j)]
+                            
+            for card in board.OpponentHand do
+                for cardIndex in board.GetCardIndexes card do
+                    for possibleIndex in possibleIndexes do
+                        if cardIndex = possibleIndex then
+                            let boardCard = board.Board.[fst(possibleIndex), snd(possibleIndex)]
+                            if boardCard = null || not boardCard.Open then
+                                let childBoard = (board :> ICloneable).Clone() :?> Board
+                                let temp = childBoard.Board.[fst(possibleIndex), snd(possibleIndex)]
+                                let handCardIndex = 
+                                    childBoard.OpponentHand
+                                    |> Array.findIndex(fun c -> (c :> IEquatable<Card>).Equals card)
+                                childBoard.Board.[fst(possibleIndex), snd(possibleIndex)] <- childBoard.OpponentHand.[handCardIndex]
+                                childBoard.Board.[fst(possibleIndex), snd(possibleIndex)].Open <- true
+                                if temp <> null then
+                                    childBoard.OpponentHand.[handCardIndex] <- temp
+                                else 
+                                    childBoard.OpponentHand <- 
+                                        childBoard.OpponentHand
+                                        |> Array.filter(fun c -> not ((c :> IEquatable<Card>).Equals card))
+                                childBoards <- [yield! childBoards; childBoard]
+            Array.ofList childBoards
