@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="CardSuit.fs" />
+    <Compile Include="CardNominal.fs" />
+    <Compile Include="Card.fs" />
+    <Compile Include="Services\IndexesGenerator.fs" />
+    <Compile Include="Board.fs" />
+    <Compile Include="Services\BoardGenerator.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlphaBetaPruningBayesian\AlphaBetaPruningBayesian.fsproj" />
+  </ItemGroup>
+
+</Project>
