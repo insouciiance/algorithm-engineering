@@ -113,7 +113,7 @@ module public BoardGenerator =
                     for j in [1..board.Cols - 2] do
                         let childBoard = (board :> ICloneable).Clone() :?> Board
                         let cardToTake = childBoard.Board.[i, j]
-                        if not cardToTake.Open then
+                        if cardToTake <> null && not cardToTake.Open then
                             childBoard.Board.[i, j] <- null
                             childBoard.OpponentHand <- 
                                 childBoard.OpponentHand
