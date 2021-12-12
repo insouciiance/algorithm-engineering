@@ -1,14 +1,14 @@
 ﻿open System
 open AlphaBetaPruningBayesian
+open Night
+open Night.Services
 open Night.Services.BoardGenerator
-open Night.Services.NightAI
-open MoveInput
 
 [<EntryPoint>]
 let main argv =
     let board = BoardGenerator.Generate()
     printfn "%s" (board.ToString())
-    let eval = (board :> IGame).StaticEvaluation true
+    let eval = (board :> IGame).StaticEvaluation()
     printf "%d" eval
     
     let nightAI = NightAI(board)

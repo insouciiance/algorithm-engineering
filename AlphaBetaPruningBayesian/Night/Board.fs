@@ -57,7 +57,7 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
                     if boardMatrix.[i, j] <> null then
                         if boardMatrix.[i, j].Open then "o " else "c "
                     else ""
-                sb.Append $"{cardString + isOpenString, -5}" |> ignore
+                sb.Append (cardString + isOpenString) |> ignore
             sb.Append "\n" |> ignore
         sb.AppendLine "Player's hand" |> ignore
         for card in this.PlayerHand do
@@ -68,7 +68,7 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
         sb.ToString()
 
     interface IGame with
-        member this.StaticEvaluation maximizingPlayer =
+        member this.StaticEvaluation() =
             let mutable evaluation = 0
             
             for i = 0 to this.Rows - 1 do
@@ -77,9 +77,12 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
                     if currentCard <> null && currentCard.Open then
                         let adjacentIndexes = getAdjacentIndexes i j this.Rows this.Cols
                         for adjacentIndex in adjacentIndexes do
-                            for card in (if maximizingPlayer then this.PlayerHand else this.OpponentHand) do
+                            for card in this.PlayerHand do
                                 if this.GetCardIndexes(card) |> Array.contains adjacentIndex then
-                                    evaluation <- evaluation + (if maximizingPlayer then 1 else -1)
+                                    evaluation <- evaluation + 1
+                            for card in this.OpponentHand do
+                                if this.GetCardIndexes(card) |> Array.contains adjacentIndex then
+                                    evaluation <- evaluation - 1
             evaluation
         
         member this.IsFinished() =

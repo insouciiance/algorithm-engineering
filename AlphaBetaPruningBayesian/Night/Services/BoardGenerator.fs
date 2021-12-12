@@ -49,6 +49,9 @@ module public BoardGenerator =
             let playerHand = 
                 last 4 cardsArray
                 |> Seq.toArray
+            
+            for card in playerHand do
+                card.Open <- true
 
             let aiHand = 
                 last 8 cardsArray
