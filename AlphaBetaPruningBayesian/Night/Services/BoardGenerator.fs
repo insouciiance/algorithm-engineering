@@ -83,6 +83,8 @@ module public BoardGenerator =
                     if board.Board.[i, j] <> null && board.Board.[i, j].Open then
                         let adjacentIndexes = getAdjacentIndexes i j board.Rows board.Cols
                         possibleIndexes <- List.distinct (possibleIndexes @ (adjacentIndexes |> List.ofArray))
+                    elif board.Board.[i, j] = null && j > 0 && j < board.Cols - 1 then
+                         possibleIndexes <- List.distinct (possibleIndexes @ ([(i, j)]))
 
             if possibleIndexes.Length = 0 then
                 for i in [0..board.Rows - 1] do

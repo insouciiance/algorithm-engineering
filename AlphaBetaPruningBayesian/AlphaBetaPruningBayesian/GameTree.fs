@@ -1,14 +1,22 @@
 ﻿namespace AlphaBetaPruningBayesian
 
 open System
+open System.Linq
 
-type public GameTree<'T when 'T :> IGame>(initialState : 'T, childStatesGenerator : 'T -> 'T[]) = 
+type public GameTree<'T when 'T :> IGame>
+    (initialState : 'T, 
+    childStatesGenerator : 'T -> 'T[], 
+    randomStatesGenerator : 'T -> 'T[]) = 
     member val public CurrentState = 
         initialState
         with get, set
        
     member val public ChildStatesGenerator = 
         childStatesGenerator
+        with get, set
+
+    member val public RandomStatesGenerator = 
+        randomStatesGenerator
         with get, set
 
     member public this.HasChildStates() = 
@@ -20,12 +28,19 @@ type public GameTree<'T when 'T :> IGame>(initialState : 'T, childStatesGenerato
         if childStates.Length = 0 then
             Unchecked.defaultof<'T>
         else
+            let mutable bestEvaluation = Int32.MaxValue;
             let mutable bestMove = childStates.[0]
 
             for childState in childStates do
-                let miniMaxValue = this.MiniMax(childState, depth - 1, true, Int32.MinValue, Int32.MaxValue)
+                let mutable totalEvaluation = 0
+                let randomStates = (this.RandomStatesGenerator  childState).Take 1000
 
-                if miniMaxValue < bestMove.StaticEvaluation() then
+                for randomState in randomStates do
+                    let miniMaxValue = this.MiniMax(randomState, depth - 1, true, Int32.MinValue, Int32.MaxValue)
+                    totalEvaluation <- totalEvaluation + miniMaxValue
+
+                if totalEvaluation < bestEvaluation then
+                    bestEvaluation <- totalEvaluation
                     bestMove <- childState
 
             bestMove

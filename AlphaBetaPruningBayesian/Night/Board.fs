@@ -83,10 +83,11 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
                             for card in this.OpponentHand do
                                 if this.GetCardIndexes(card) |> Array.contains adjacentIndex then
                                     evaluation <- evaluation - 1
+            evaluation <- evaluation + (this.OpponentHand.Length - this.PlayerHand.Length) * 10
             evaluation
         
         member this.IsFinished() =
-            playerHand.Length = 0 || opponentHand.Length = 0
+            this.PlayerHand.Length = 0 || this.OpponentHand.Length = 0
 
     interface ICloneable with
         member this.Clone() = 

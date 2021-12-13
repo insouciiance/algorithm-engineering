@@ -27,6 +27,7 @@ namespace NightGame
     {
         private NightAI _nightAi;
         private int _currentCardIndex = -1;
+        private TextBlock _currentCardUI = null;
 
         private Board GameBoard => _nightAi?.CurrentBoard;
 
@@ -68,7 +69,12 @@ namespace NightGame
         {
             foreach (Card _ in board.PlayerHand)
             {
-                PlayerHand.ColumnDefinitions.Add(new ColumnDefinition());
+                ColumnDefinition def = new()
+                {
+                    Width = new GridLength(110)
+                };
+
+                PlayerHand.ColumnDefinitions.Add(def);
             }
 
             for (int i = 0; i < board.PlayerHand.Length; i++)
@@ -86,7 +92,12 @@ namespace NightGame
         {
             foreach (Card _ in board.OpponentHand)
             {
-                OpponentHand.ColumnDefinitions.Add(new ColumnDefinition());
+                ColumnDefinition def = new()
+                {
+                    Width = new GridLength(110)
+                };
+
+                OpponentHand.ColumnDefinitions.Add(def);
             }
 
             for (int i = 0; i < board.OpponentHand.Length; i++)
@@ -101,7 +112,9 @@ namespace NightGame
         {
             TextBlock cardBlock = new()
             {
-                Margin = new Thickness(5)
+                Margin = new Thickness(5),
+                Width = 100,
+                Height = 140,
             };
 
             ImageBrush brush = new();
@@ -111,6 +124,11 @@ namespace NightGame
             {
                 brush.ImageSource = new BitmapImage(new Uri(imageUrl, UriKind.Relative));
                 cardBlock.Background = brush;
+                cardBlock.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                cardBlock.Background = Brushes.DimGray;
             }
 
             cardBlock.SetValue(Grid.RowProperty, row);
@@ -121,19 +139,44 @@ namespace NightGame
 
         private void OnPlayerCardMouseDown(object obj, MouseEventArgs _)
         {
-            object columnObj = ((TextBlock)obj).GetValue(Grid.ColumnProperty);
+            if (_currentCardUI is not null)
+            {
+                _currentCardUI.Opacity = 1;
+            }
+
+            _currentCardUI = (TextBlock)obj;
+            object columnObj = _currentCardUI.GetValue(Grid.ColumnProperty);
             int columnIndex = Convert.ToInt32(columnObj);
-            _currentCardIndex =  columnIndex;
+
+            if (_currentCardIndex == columnIndex)
+            {
+                _currentCardIndex = -1;
+                _currentCardUI = null;
+                return;
+            }
+
+            _currentCardUI.Opacity = 0.5;
+            _currentCardIndex = columnIndex;
+
+            ColorPossibleMoves();
         }
 
         private async void OnBoardCardMouseDown(object obj, MouseEventArgs _)
         {
+            _currentCardUI = null;
+
             object columnObj = ((TextBlock)obj).GetValue(Grid.ColumnProperty);
             int columnIndex = Convert.ToInt32(columnObj);
             object rowObj = ((TextBlock)obj).GetValue(Grid.RowProperty);
             int rowIndex = Convert.ToInt32(rowObj);
 
+            if (_nightAi.CurrentBoard.Board[rowIndex, columnIndex] is null && _currentCardIndex < 0)
+            {
+                return;
+            }
+
             MoveInput input = new(rowIndex, columnIndex, _currentCardIndex);
+
             _nightAi.TakePlayerMove(input);
 
             _currentCardIndex = -1;
@@ -141,16 +184,52 @@ namespace NightGame
             ClearField();
             InitializeField();
 
+            if (_nightAi.IsGameFinished())
+            {
+                MessageBox.Show("You won!");
+                return;
+            }
+
             await Task.Run(() =>
             {
+                Dispatcher.Invoke(() =>
+                {
+                    StatusBar.Text = "AI thinking...";
+                });
+
                 _nightAi.TakeAIMove();
 
                 Dispatcher.Invoke(() =>
                 {
                     ClearField();
                     InitializeField();
+
+                    if (_nightAi.IsGameFinished())
+                    {
+                        MessageBox.Show("AI won!");
+                    }
+
+                    StatusBar.Text = "Your turn";
                 });
             });
+        }
+
+        private void ColorPossibleMoves()
+        {
+            foreach (UIElement card in Board.Children)
+            {
+                card.Opacity = 1;
+            }
+
+            Card currentCard = _nightAi.CurrentBoard.PlayerHand[_currentCardIndex];
+
+            var cardIndexes = _nightAi.CurrentBoard.GetCardIndexes(currentCard);
+
+            foreach (Tuple<int, int> cardIndex in cardIndexes)
+            {
+                object cardUI = Board.Children[cardIndex.Item1 * 9 + cardIndex.Item2];
+                ((TextBlock)cardUI).Opacity = 0.75;
+            }
         }
     }
 }

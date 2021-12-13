@@ -29,21 +29,8 @@ type public NightAI(board : Board) =
                 |> Array.filter(fun c -> not ((c :> IEquatable<Card>).Equals card))
 
     member public this.TakeAIMove() = 
-        let mutable bestMove = null
-        let mutable counter = 0
-        let handPredictions = 
-            BoardGenerator.GenerateHandPredictions this.CurrentBoard
-            |> Array.take 100
-        for handPrediction in handPredictions do
-            let gameTree = GameTree(handPrediction, BoardGenerator.GenerateChildBoards)
-            let currentBestMove = gameTree.FindBestMove 1
-            bestMove <- 
-                match currentBestMove with
-                | move when bestMove = null || (move :> IGame).StaticEvaluation() < (bestMove :> IGame).StaticEvaluation() -> move
-                | _ -> bestMove
-            if counter % 5000 = 0 then
-                printfn "%d" counter
-            counter <- counter + 1
+        let gameTree = GameTree(this.CurrentBoard, BoardGenerator.GenerateChildBoards, BoardGenerator.GenerateHandPredictions)
+        let bestMove = gameTree.FindBestMove 1
         bestMove.PlayerHand <- this.CurrentBoard.PlayerHand
         this.CurrentBoard <- bestMove
         bestMove
