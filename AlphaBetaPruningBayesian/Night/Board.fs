@@ -44,29 +44,6 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
 
     new() = Board(Array2D.create<Card> 4 9 null, Array.create 3 null, Array.create 3 null)
 
-    override this.ToString() = 
-        let sb = StringBuilder()
-        sb.AppendLine "Board:" |> ignore
-        for i in [0..this.Rows - 1] do
-            for j in [0..this.Cols - 1] do
-                let cardString = 
-                    match boardMatrix.[i, j] with
-                    | null -> "[nil]"
-                    | _ -> boardMatrix.[i, j].ToString()
-                let isOpenString = 
-                    if boardMatrix.[i, j] <> null then
-                        if boardMatrix.[i, j].Open then "o " else "c "
-                    else ""
-                sb.Append (cardString + isOpenString) |> ignore
-            sb.Append "\n" |> ignore
-        sb.AppendLine "Player's hand" |> ignore
-        for card in this.PlayerHand do
-            sb.Append card |> ignore
-        sb.AppendLine "\nOpponent's hand" |> ignore
-        for card in this.OpponentHand do
-            sb.Append card |> ignore
-        sb.ToString()
-
     interface IGame with
         member this.StaticEvaluation() =
             let mutable evaluation = 0
@@ -112,3 +89,26 @@ type public Board(boardMatrix : Card[,], playerHand : Card[], opponentHand: Card
                 opponendHand.[i].Open <- currentCard.Open
 
             Board(newBoard, playerHand, opponendHand) :> obj
+
+    override this.ToString() = 
+        let sb = StringBuilder()
+        sb.AppendLine "Board:" |> ignore
+        for i in [0..this.Rows - 1] do
+            for j in [0..this.Cols - 1] do
+                let cardString = 
+                    match boardMatrix.[i, j] with
+                    | null -> "[nil]"
+                    | _ -> boardMatrix.[i, j].ToString()
+                let isOpenString = 
+                    if boardMatrix.[i, j] <> null then
+                        if boardMatrix.[i, j].Open then "o " else "c "
+                    else ""
+                sb.Append (cardString + isOpenString) |> ignore
+            sb.Append "\n" |> ignore
+        sb.AppendLine "Player's hand" |> ignore
+        for card in this.PlayerHand do
+            sb.Append card |> ignore
+        sb.AppendLine "\nOpponent's hand" |> ignore
+        for card in this.OpponentHand do
+            sb.Append card |> ignore
+        sb.ToString()

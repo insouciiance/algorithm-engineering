@@ -95,15 +95,16 @@ module public BoardGenerator =
                 for cardIndex in board.GetCardIndexes card do
                     for possibleIndex in possibleIndexes do
                         if cardIndex = possibleIndex then
-                            let boardCard = board.Board.[fst(possibleIndex), snd(possibleIndex)]
+                            let (i, j) = possibleIndex
+                            let boardCard = board.Board.[i, j]
                             if boardCard = null || not boardCard.Open then
                                 let childBoard = (board :> ICloneable).Clone() :?> Board
-                                let temp = childBoard.Board.[fst(possibleIndex), snd(possibleIndex)]
+                                let temp = childBoard.Board.[i, j]
                                 let handCardIndex = 
                                     childBoard.OpponentHand
                                     |> Array.findIndex(fun c -> (c :> IEquatable<Card>).Equals card)
-                                childBoard.Board.[fst(possibleIndex), snd(possibleIndex)] <- childBoard.OpponentHand.[handCardIndex]
-                                childBoard.Board.[fst(possibleIndex), snd(possibleIndex)].Open <- true
+                                childBoard.Board.[i, j] <- childBoard.OpponentHand.[handCardIndex]
+                                childBoard.Board.[i, j].Open <- true
                                 if temp <> null then
                                     childBoard.OpponentHand.[handCardIndex] <- temp
                                 else 
