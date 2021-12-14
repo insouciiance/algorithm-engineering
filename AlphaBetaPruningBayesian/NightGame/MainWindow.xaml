@@ -1,0 +1,57 @@
+﻿<Window x:Class="NightGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NightGame"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1050" Width="1000">
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="170"></RowDefinition>
+            <RowDefinition Height="600"></RowDefinition>
+            <RowDefinition Height="170"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock 
+            Grid.Row="0" 
+            HorizontalAlignment="Center" 
+            FontSize="30" 
+            FontWeight="Bold"
+            Foreground="Gray">
+            Night
+        </TextBlock>
+        <Grid Name="OpponentHand" Grid.Row="1" HorizontalAlignment="Center">
+        </Grid>
+        <Grid Name="Board" Grid.Row="2" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+        </Grid>
+        <Grid Name="PlayerHand" Grid.Row="3" HorizontalAlignment="Center">
+        </Grid>
+        <TextBlock 
+            Name="StatusBar" 
+            Grid.Row="4" 
+            Foreground="GhostWhite"
+            FontWeight="Bold"
+            FontSize="14">
+            Your turn
+        </TextBlock>
+    </Grid>
+</Window>
