@@ -1,0 +1,13 @@
+@use '/src/shared/scss/shared.scss' as *;
+
+.LinesSectionWrapper {
+    p {
+        color: $main-bright-color;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .Accent {
+        color: $main-accent-color;
+    }
+}

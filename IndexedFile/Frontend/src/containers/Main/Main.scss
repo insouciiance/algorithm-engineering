@@ -1,0 +1,36 @@
+@use '/src/shared/scss/shared.scss' as *;
+
+.MainWrapper {
+    width: 100%;
+}
+
+.MainGreeting {
+    color: $main-bright-color;
+    margin: 0;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.ComparisonsCountContainer {
+    color: $main-bright-color;
+    height: 2rem;
+
+    h4 {
+        font-size: 1rem;
+        line-height: 1rem;
+        margin: 0;
+        padding: 0.5rem;
+    }
+}
+
+.IndexedFileContainer {
+    display: flex;
+
+    .IndexedSection {
+        flex: 1 1;
+    }
+
+    .DataSection {
+        flex: 1 1;
+    }
+}
